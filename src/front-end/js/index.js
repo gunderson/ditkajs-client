@@ -1,3 +1,3 @@
 "use strict";
-var controlPanelView = require( "./control-panel-view" );
+var controlPanelView = require( "./modules/control-panel/view" );
 var templates = require( "./templates" );

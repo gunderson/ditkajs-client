@@ -15,9 +15,12 @@ var gulp = require( 'gulp' ),
 	tinylr = require( 'tiny-lr' ),
 	marked = require( 'marked' ), // For :markdown filter in jade
 	path = require( 'path' ),
+	fs = require( 'fs' ),
 	cp = require( 'child_process' ),
 	source = require( 'vinyl-source-stream' ),
-	buffer = require( 'vinyl-buffer' );
+	buffer = require( 'vinyl-buffer' ),
+	rename = require( "gulp-rename" );
+
 
 var domains = {
 	frontEndSettings: {
@@ -30,6 +33,11 @@ var domains = {
 		serverPort: 3000,
 		lrPort: 35728,
 	},
+};
+
+var env = "dev";
+var data = {
+	env: require( `./src/shared/js/data/env/${env}` )
 };
 
 _.each( domains, setupDomainTasks );
@@ -69,19 +77,68 @@ function setupDomainTasks( domainSettings ) {
 			.on( 'error', gutil.log )
 	} );
 
+	function listFolders( dir ) {
+		return fs.readdirSync( dir )
+			.filter( function ( file ) {
+				return fs.statSync( path.join( dir, file ) )
+					.isDirectory();
+			} );
+	}
+
+	function listFiles( dir ) {
+		return fs.readdirSync( dir )
+			.filter( function ( file ) {
+				return !fs.statSync( path.join( dir, file ) )
+					.isDirectory();
+			} );
+	}
+
 	gulp.task( `${domainSettings.domainName}-static-templates`, function () {
-		return gulp.src( `./src/${domainSettings.domainName}/jade/static/index.jade` )
-			.pipe( plumber() )
-			.pipe( pug( {
-				pretty: true,
-			} ) )
-			.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
-			.pipe( livereload( liveReloadServer ) )
-			.on( 'error', gutil.log );
+		var copyPath = "./src/shared/js/data/copy/"
+		var langs = listFolders( copyPath );
+		var langData = {};
+		if ( !langs.length ) throw new Error( "No language folders in ./src/shared/js/data/copy/" );
+		var files = listFiles( path.join( copyPath, langs[ 0 ] ) );
+		if ( !files.length ) throw new Error( "No data files in ./src/shared/js/data/copy/" + langs[ 0 ] );
+
+		return langs.map( ( lang ) => {
+			langData[ lang ] = {};
+			_.each( files, ( filename ) => {
+				langData[ lang ][ path.basename( filename, ".json" ) ] = require( path.resolve( copyPath, lang, filename ) );
+			} );
+			return gulp.src( [ `./src/${domainSettings.domainName}/pug/static/**/*.pug`, `!./src/${domainSettings.domainName}/pug/static/**/_*.pug` ] )
+				.pipe( plumber() )
+				.pipe( rename( function ( path ) {
+					path.basename += `.${lang}`;
+					path.extname = ".html";
+				} ) )
+				.pipe( pug( {
+					pretty: true,
+					locals: {
+						data: data,
+						copy: langData[ lang ]
+					}
+				} ) )
+				.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
+				.pipe( livereload( liveReloadServer ) )
+				.on( 'error', gutil.log )
+				.on( 'end', () => {
+					if ( lang === "en" ) {
+						gulp.src( `./dist/${domainSettings.domainName}/index.en.html` )
+							.pipe( plumber() )
+							.pipe( rename( function ( path ) {
+								path.basename = "index";
+								path.extname = ".html";
+							} ) )
+							.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
+					}
+				} );
+		} );
+
 	} );
 
 	gulp.task( `${domainSettings.domainName}-dynamic-templates`, function () {
-		var stream = gulp.src( `./src/${domainSettings.domainName}/jade/dynamic/**/*.jade` )
+		var stream = gulp.src( [ `./src/${domainSettings.domainName}/pug/dynamic/**/*.pug`, `!./src/${domainSettings.domainName}/pug/dynamic/**/_*.pug` ] )
 			.pipe( plumber() )
 			.pipe( pug( {
 				pretty: true,

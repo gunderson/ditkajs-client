@@ -42,6 +42,7 @@
     "gulp-livereload": "*",
     "gulp-plumber": "^1.1.0",
     "gulp-pug": "^3.0.2",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "*",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "*",
