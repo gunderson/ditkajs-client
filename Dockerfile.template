@@ -32,19 +32,13 @@ RUN git clone https://github.com/sass/sassc.git libsass/sassc
 
 # Create configure script
 
-RUN cd libsass
-RUN cd libsass
-RUN ls
-RUN autoreconf --force --install
-RUN cd ..
+RUN autoreconf ./libsass --force --install
 
 # Create custom makefiles for **shared library**, for more info read:
 # 'Difference between static and shared libraries?' before installing libsass  http://stackoverflow.com/q/2649334/802365
 
-RUN cd libsass/sassc
-RUN autoreconf --force --install
-RUN ./configure --disable-tests --enable-shared --prefix=/usr
-RUN cd ..
+RUN autoreconf libsass/sassc --force --install
+RUN ./libsass/sasscconfigure --disable-tests --enable-shared --prefix=/usr
 
 # Build the library
 
