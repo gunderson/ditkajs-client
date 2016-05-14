@@ -1,11 +1,11 @@
-FROM resin/raspberrypi3-node:onbuild
+FROM resin/raspberrypi3-node:jessie
 
 # Enable systemd
 ENV INITSYSTEM on
 
 # Your code goes here
 
-# RUN apt-get update && apt-get install rsync libpcre3-dev git make cmake gcc build-essential g++ swig ntp python2.7-dev
+RUN apt-get update && apt-get install rsync libpcre3-dev git make cmake gcc build-essential g++ swig ntp python2.7-dev libsass
 # RUN git clone https://github.com/intel-iot-devkit/mraa.git \
 # && cd mraa \
 # && mkdir build \
