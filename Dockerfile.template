@@ -36,6 +36,11 @@ RUN autoreconf libsass --force --install
 # Build the library
 RUN make -C libsass -j5
 
+RUN git clone git://git.drogon.net/wiringPi
+WORKDIR /wiringPi
+RUN git pull origin
+RUN ./build
+WORKDIR /
 ##############
 
 RUN npm update && npm install -g gulp node-gyp
