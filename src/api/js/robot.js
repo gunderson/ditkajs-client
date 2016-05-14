@@ -23,7 +23,8 @@ board.on( "ready", setup );
 
 function setup() {
 	currentLEDIndex = 0;
-	leds = new five.Leds( [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] );
+	// leds = new five.Leds( [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] );
+	leds = new five.Leds( [ 2, 3, 4, 5, ] );
 	play();
 }
 
