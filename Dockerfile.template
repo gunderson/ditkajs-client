@@ -33,6 +33,7 @@ RUN git clone https://github.com/sass/sassc.git libsass/sassc
 # Create configure script
 
 RUN cd libsass
+RUN cd libsass
 RUN ls
 RUN autoreconf --force --install
 RUN cd ..
