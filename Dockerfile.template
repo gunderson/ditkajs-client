@@ -28,7 +28,7 @@ RUN apt-get install -y curl git build-essential automake libtool
 # Fetch sources
 
 RUN git clone https://github.com/sass/libsass.git
-RUN git clone https://github.com/sass/sassc.git libsass/sassc
+RUN git clone https://github.com/sass/sassc.git
 
 # Create configure script
 
@@ -37,8 +37,8 @@ RUN autoreconf ./libsass --force --install
 # Create custom makefiles for **shared library**, for more info read:
 # 'Difference between static and shared libraries?' before installing libsass  http://stackoverflow.com/q/2649334/802365
 
-RUN autoreconf libsass/sassc --force --install
-RUN ./libsass/sasscconfigure --disable-tests --enable-shared --prefix=/usr
+RUN autoreconf ./sassc --force --install
+RUN ./sassc/configure --disable-tests --enable-shared --prefix=/usr
 
 # Build the library
 
