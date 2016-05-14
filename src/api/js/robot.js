@@ -1,11 +1,11 @@
 "use strict";
-var Edison = require( "edison-io" );
+var raspi = require( "raspi-io" );
 var _ = require( "lodash" );
 var five = require( "johnny-five" );
 
 
 var board = new five.Board( {
-	io: new Edison(),
+	io: new raspi(),
 	repl: false,
 	//debug: false,
 } );
