@@ -14,6 +14,42 @@ ENV INITSYSTEM on
 # && make \
 # && make install --silent
 
+
+##############
+
+# Add extra software sources
+
+RUN apt-get update -qq
+
+# Libsass requirements.
+
+RUN apt-get install -y curl git build-essential automake libtool
+
+# Fetch sources
+
+RUN git clone https://github.com/sass/libsass.git
+RUN git clone https://github.com/sass/sassc.git libsass/sassc
+
+# Create configure script
+
+RUN cd libsass
+RUN autoreconf --force --install
+RUN cd ..
+
+# Create custom makefiles for **shared library**, for more info read:
+# 'Difference between static and shared libraries?' before installing libsass  http://stackoverflow.com/q/2649334/802365
+
+RUN cd libsass
+RUN autoreconf --force --install
+RUN ./configure --disable-tests --enable-shared --prefix=/usr
+RUN cd ..
+
+# Build the library
+
+RUN make -C libsass -j5
+
+##############
+
 RUN npm update && npm install -g gulp node-gyp
 
 

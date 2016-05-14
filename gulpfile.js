@@ -6,6 +6,7 @@ var gulp = require( 'gulp' ),
 	babelify = require( 'babelify' ),
 	browserify = require( 'browserify' ),
 	jade = require( 'gulp-jade' ),
+	pug = require( 'gulp-pug' ),
 	plumber = require( 'gulp-plumber' ),
 	_ = require( 'lodash' ),
 	concat = require( 'gulp-concat' ),
@@ -71,7 +72,7 @@ function setupDomainTasks( domainSettings ) {
 	gulp.task( `${domainSettings.domainName}-static-templates`, function () {
 		return gulp.src( `./src/${domainSettings.domainName}/jade/static/index.jade` )
 			.pipe( plumber() )
-			.pipe( jade( {
+			.pipe( pug( {
 				pretty: true,
 			} ) )
 			.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
@@ -82,7 +83,7 @@ function setupDomainTasks( domainSettings ) {
 	gulp.task( `${domainSettings.domainName}-dynamic-templates`, function () {
 		return gulp.src( `./src/${domainSettings.domainName}/jade/dynamic/**/*.jade` )
 			.pipe( plumber() )
-			.pipe( jade( {
+			.pipe( pug( {
 				pretty: true,
 			} ) )
 			.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
