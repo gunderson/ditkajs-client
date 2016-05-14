@@ -5,6 +5,8 @@ ENV INITSYSTEM on
 
 # Your code goes here
 
+RUN apt-get update && apt-get install rsync libpcre3-dev git make cmake gcc build-essential g++ swig ntp python2.7-dev
+RUN apt-get upgrade nodejs
 # RUN apt-get update && apt-get install rsync libpcre3-dev git make cmake gcc build-essential g++ swig ntp python2.7-dev
 # RUN git clone https://github.com/intel-iot-devkit/mraa.git \
 # && cd mraa \
