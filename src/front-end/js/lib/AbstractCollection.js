@@ -3,7 +3,7 @@ var Emitter = require( "backbone-events-standalone" );
 var AbstractModel = require( "AbstractModel" );
 
 class Collection extends Emitter {
-	var _models, _changeQueue, _options;
+	var _models, _options;
 
 	constructor( models, options ) {
 		_options = _.extend( {
@@ -12,9 +12,16 @@ class Collection extends Emitter {
 		}, options );
 
 		_models = [];
-		_changeQueue = [];
 		reset( models );
 	}
+
+	// ---------------------------------------------------
+
+	[ Symbol.iterator ]() {
+		return _models.values()
+	}
+
+	// ---------------------------------------------------
 
 	reset( models, options ) {
 		options = options || {};
@@ -27,6 +34,8 @@ class Collection extends Emitter {
 		}
 		return this;
 	}
+
+	// ---------------------------------------------------
 
 	set( models, options ) {
 		options = options || {};
@@ -44,6 +53,8 @@ class Collection extends Emitter {
 		} );
 		return this;
 	}
+
+	// ---------------------------------------------------
 
 	add( models, options ) {
 		options = options || {};
@@ -88,6 +99,8 @@ class Collection extends Emitter {
 		return updated;
 	}
 
+	// ---------------------------------------------------
+
 	remove( models, options ) {
 		options = options || {};
 		//if models isn't an array, make it one
@@ -109,19 +122,61 @@ class Collection extends Emitter {
 		return this;
 	}
 
+	// ---------------------------------------------------
+
 	empty( options ) {
 		this.remove( _models, options );
 	}
 
-	get( id ) {
-		return _.filter( _models, ( m ) => m.id === id );
+	// ---------------------------------------------------
+
+	get( matchConditions ) {
+		// make sure match conditions is an array
+		matchConditions = _.isArray( matchConditions ) ? matchConditions : [ matchConditions ];
+
+		// an array of objects is assumed to be a list of match condition objects
+		// an array of non-objects is assumed to be a list of ids
+		if ( typeof matchConditions[ 0 ] !== "object" ) {
+			// convert to match condition objects
+			matchConditions = _.map( matchConditions, ( id ) => {
+				return {
+					id
+				};
+			} );
+		}
+
+		var models = _( matchConditions )
+			// for each condition, find a list of models that matches
+			.map( ( condition ) => {
+				return _.filter( _models, condition );
+			} )
+			.flattten()
+			// only include models once in list
+			.uniq()
+			.value();
+
+		if ( models.length === 1 ) {
+			return models[ 0 ];
+		} else {
+			return models;
+		}
 	}
+
+	// ---------------------------------------------------
+
+	at( index ) {
+		return _models[ index ];
+	}
+
+	// ---------------------------------------------------
 
 	fetch( options ) {
 		options = options || {};
 		// default fetch action is to merge from json api
 		// to reset set options.reset = true
 	}
+
+	// ---------------------------------------------------
 
 	forwardChangeEvent( data ) {
 		this.trigger( "change", _.extend( {
@@ -130,9 +185,11 @@ class Collection extends Emitter {
 		return this;
 	}
 
-	at( index ) {
-		return _models[ index ];
-	}
+	// ---------------------------------------------------
+
+	toJSON() => _.map( _models, ( m ) => m.toJSON() );
+
+	// ---------------------------------------------------
 
 	get length() {
 		return _models.length;
@@ -141,6 +198,8 @@ class Collection extends Emitter {
 	get models() {
 		return _models;
 	}
+
+	// ---------------------------------------------------
 
 	set sortBy( attr ) {
 		options.sort = ( a, b ) => b[ attr ] - a[ attr ];
