@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 var BackboneEvents = require( "backbone-events-standalone" );
 var _ = require( "lodash" );
 var express = require( "express" );

@@ -38,6 +38,7 @@
     "gulp-concat": "*",
     "gulp-csso": "*",
     "gulp-jade": "*",
+    "gulp-jst-concat": "github:gunderson/gulp-jst-concat",
     "gulp-livereload": "*",
     "gulp-plumber": "^1.1.0",
     "gulp-pug": "^3.0.2",

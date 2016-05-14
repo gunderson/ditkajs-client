@@ -5,8 +5,8 @@ var gulp = require( 'gulp' ),
 	uglify = require( 'gulp-uglify' ),
 	babelify = require( 'babelify' ),
 	browserify = require( 'browserify' ),
-	jade = require( 'gulp-jade' ),
 	pug = require( 'gulp-pug' ),
+	jstConcat = require( 'gulp-jst-concat' ),
 	plumber = require( 'gulp-plumber' ),
 	_ = require( 'lodash' ),
 	concat = require( 'gulp-concat' ),
@@ -81,14 +81,18 @@ function setupDomainTasks( domainSettings ) {
 	} );
 
 	gulp.task( `${domainSettings.domainName}-dynamic-templates`, function () {
-		return gulp.src( `./src/${domainSettings.domainName}/jade/dynamic/**/*.jade` )
+		var stream = gulp.src( `./src/${domainSettings.domainName}/jade/dynamic/**/*.jade` )
 			.pipe( plumber() )
 			.pipe( pug( {
 				pretty: true,
 			} ) )
-			.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
+			.pipe( jstConcat( `templates.js` ) )
+			.pipe( gulp.dest( `./src/${domainSettings.domainName}/js/` ) )
 			.pipe( livereload( liveReloadServer ) )
-			.on( 'error', gutil.log );
+			.on( 'error', gutil.log )
+			.on( 'end', () => gulp.run( `${domainSettings.domainName}-js` ) );
+
+		return stream;
 	} );
 
 
@@ -107,7 +111,6 @@ function setupDomainTasks( domainSettings ) {
 	gulp.task( domainSettings.domainName, [
 		`${domainSettings.domainName}-dynamic-templates`,
 		`${domainSettings.domainName}-static-templates`,
-		`${domainSettings.domainName}-js`,
 		`${domainSettings.domainName}-css`,
 	] );
 

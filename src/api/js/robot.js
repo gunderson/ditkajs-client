@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 var raspi = require( "raspi-io" );
 var _ = require( "lodash" );
 var five = require( "johnny-five" );
