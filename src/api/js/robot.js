@@ -1,5 +1,5 @@
 // 'use strict';
-// var _ = require( 'lodash' );
+var _ = require( 'lodash' );
 var EventEmitter = require( '../../shared/js/abstract/EventEmitter' );
 var Raspi = require( 'raspi-io' );
 var five = require( 'johnny-five' );
@@ -23,7 +23,7 @@ class Robot extends EventEmitter {
 		this.patternFunction = this.sweep;
 		this.runTime = 0;
 
-		this.board.on( 'ready', this.setup );
+		this.board.on( 'ready', this.setup.bind( this ) );
 	}
 
 	setup() {
@@ -35,8 +35,8 @@ class Robot extends EventEmitter {
 
 	play() {
 		if ( this.interval ) return;
-		this.lastLoopTime = Date.now();
-		this.interval = setInterval( this.loop, this.tickIntervalMillis );
+		this.lastLoopTime = _.now();
+		this.interval = setInterval( this.loop.bind( this ), this.tickIntervalMillis );
 	}
 
 	stop() {
@@ -45,10 +45,10 @@ class Robot extends EventEmitter {
 	}
 
 	loop() {
-		var now = Date.now();
+		var now = _.now();
 		var loopTime = now - this.lastLoopTime;
 		this.runTime += loopTime;
-		var tick = Math.floor( this.runTime / this.tickIntervalMillis );
+		var tick = _.floor( this.runTime / this.tickIntervalMillis );
 		this.lastLoopTime = now();
 		this.patternFunction( tick );
 	}
@@ -66,7 +66,7 @@ class Robot extends EventEmitter {
 		model.id = model.id || 0;
 		model.state = model.state || 'off';
 		// stop loop
-		stop();
+		this.stop();
 		// kill other leds
 		this.leds.each( ( led ) => led.off() );
 		// start the led at id

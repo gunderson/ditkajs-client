@@ -9,26 +9,26 @@ ENV INITSYSTEM on
 
 # Add extra software sources
 
-RUN apt-get update -qq
+# RUN apt-get update -qq
 
 # Libsass requirements.
 
-RUN apt-get install -y curl git build-essential automake libtool
-
-# Fetch sources
-
-RUN git clone https://github.com/sass/libsass.git
-RUN git clone https://github.com/sass/sassc.git libsass/sassc
-
-# Create configure script
-WORKDIR /libsass
-RUN autoreconf --force --install
-RUN ./configure --disable-tests --enable-shared --prefix=/usr
-WORKDIR /
-
-# Build the library
-RUN make -C libsass -j5
-RUN make -C libsass -j5 install
+# RUN apt-get install -y curl git build-essential automake libtool
+#
+# # Fetch sources
+#
+# RUN git clone https://github.com/sass/libsass.git
+# RUN git clone https://github.com/sass/sassc.git libsass/sassc
+#
+# # Create configure script
+# WORKDIR /libsass
+# RUN autoreconf --force --install
+# RUN ./configure --disable-tests --enable-shared --prefix=/usr
+# WORKDIR /
+#
+# # Build the library
+# RUN make -C libsass -j5
+# RUN make -C libsass -j5 install
 
 
 
