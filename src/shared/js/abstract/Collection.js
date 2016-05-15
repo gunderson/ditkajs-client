@@ -1,8 +1,8 @@
 var _ = require( 'lodash' );
-var Emitter = require( 'backbone-events-standalone' );
-var AbstractModel = require( 'AbstractModel' );
+var EventEmitter = require( './EventEmitter' );
+var AbstractModel = require( './AbstractModel' );
 
-class Collection extends Emitter {
+class Collection extends EventEmitter {
 
 	constructor( models, options ) {
 		super();

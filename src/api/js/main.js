@@ -1,8 +1,16 @@
 'use strict';
+var Server = require( './server' );
+var Robot = require( './robot' );
 
-var apiServer = require( './server' );
-var robot = require( './robot' );
+function start( data ) {
+	var apiServer = new Server( GLOBALS );
+	var robot = new Robot( GLOBALS );
 
-apiServer.on( 'led', robot.led );
-apiServer.on( 'play', robot.play );
-apiServer.on( 'stop', robot.stop );
+	apiServer.on( 'led', robot.led );
+	apiServer.on( 'play', robot.play );
+	apiServer.on( 'stop', robot.stop );
+}
+
+module.exports = {
+	start
+};

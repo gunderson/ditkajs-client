@@ -1,8 +1,8 @@
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-var Emitter = require( 'backbone-events-standalone' );
+var EventEmitter = require( './EventEmitter' );
 
-class View extends Emitter {
+class View extends EventEmitter {
 	constructor( options ) {
 		super();
 		_.extend( this, {

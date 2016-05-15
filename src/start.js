@@ -1,14 +1,59 @@
-var frontEnd = require( './front-end/main' );
-var apiServer = require( './api/main' );
-var cp = require( "child_process" );
-var GitWebhooks = require( 'git-web-hooks' )
+var pkg = require( '../package.json' );
+require( 'colors' );
 
-new GitWebhooks( {
-		PORT: 3333 // optional. 3333 is default
+// ----------------------------------------------------------------
+// CLI
+
+var argv = require( 'yargs' )
+	.epilog( 'copyright 2015' )
+
+// version
+.alias( 'v', 'version' )
+	.version( function() {
+		return pkg.version;
 	} )
-	.on( 'payload', ( req, res, payload ) => {
-		// do something based on payload contents
-		cp.spawn( "gulp" );
-		// then send a response to github
-		res.send( 'got it!' );
+	.describe( 'v', 'show version information' )
+	// help text
+	.alias( 'h', 'help' )
+	.help( 'help' )
+	.usage( 'Usage: $0 -env [dev|stage|prod]' )
+	.showHelpOnFail( false, 'Specify --help for available options' )
+	// environment
+	.option( 'env', {
+		alias: 'environment',
+		describe: 'define the deployment target [dev|stage|prod]',
+		/* array | boolean | string */
+		type: 'string',
+		nargs: 1,
+		default: 'dev'
 	} )
+	.argv;
+
+var env = argv.env;
+
+console.log( 'Using environment', env.green );
+
+var GLOBALS = {
+	ENV: require( `./shared/js/data/env/${env}` )
+};
+
+
+// ------------------------------------------------------
+// front-end server
+
+var FrontEnd = require( './front-end/js/main' );
+FrontEnd.start( GLOBALS );
+
+
+// ------------------------------------------------------
+// back-end server
+
+var BackEnd = require( './api/js/main' );
+BackEnd.start( GLOBALS );
+
+
+// ------------------------------------------------------
+// Webhook server
+
+var Webhooks = require( './shared/js/HookServer' );
+Webhooks.start( GLOBALS );

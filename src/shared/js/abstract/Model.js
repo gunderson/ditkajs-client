@@ -1,8 +1,8 @@
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-var Emitter = require( 'backbone-events-standalone' );
+var EventEmitter = require( './EventEmitter' );
 
-class Model extends Emitter {
+class Model extends EventEmitter {
 	constructor( attributes, options ) {
 		super();
 		this._collections = [];

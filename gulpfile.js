@@ -76,7 +76,17 @@ function setupDomainTasks( domainSettings, domainName ) {
 			.on( 'error', gutil.log );
 	} );
 
-	gulp.task( `${domainName}-js`, [ `${domainName}-static-templates` ], function() {
+	gulp.task( `${domainName}-copy-js-src`, function() {
+		return gulp.src( `./src/${domainName}/js/**/*` )
+			.pipe( plumber( onError ) )
+			.pipe( gulp.dest( `./dist/${domainName}/js/` ) )
+			.on( 'error', gutil.log );
+	} );
+
+	gulp.task( `${domainName}-compile-js`, [
+		`${domainName}-copy-js-src`,
+		`${domainName}-static-templates`
+	], function() {
 		return gulp
 			.src( `./src/${domainName}/js/index.js`, {
 				read: false
@@ -210,7 +220,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 		return gulp
 			.src( `./src/${domainName}/assets/**/*` )
 			.pipe( plumber( onError ) )
-			.pipe( gulp.dest( `./src/${domainName}/assets/` ) )
+			.pipe( gulp.dest( `./dest/${domainName}/assets/` ) )
 			.on( 'error', gutil.log );
 	} );
 
@@ -221,36 +231,16 @@ function setupDomainTasks( domainSettings, domainName ) {
 					return console.log( err );
 				}
 				gulp.watch( `./src/${domainName}/sass/**/*.sass`, [ `${domainName}-css` ] );
-				gulp.watch( `./src/${domainName}/js/**/*.js`, [ `${domainName}-js` ] );
+				gulp.watch( `./src/${domainName}/js/**/*.js`, [ `${domainName}-compile-js` ] );
 				gulp.watch( `./src/${domainName}/jade/static/**/*.pug`, [ `${domainName}-static-templates` ] );
-				gulp.watch( `./src/${domainName}/jade/dynamic/**/*.pug`, [ `${domainName}-js` ] );
+				gulp.watch( `./src/${domainName}/jade/dynamic/**/*.pug`, [ `${domainName}-compile-js` ] );
 			} );
 	} );
 
-	gulp.task( `${domainName}-main`, function() {
-		var b = browserify( {
-			entries: [ `./src/${domainName}/js/main.js` ],
-			debug: true,
-			bare: true,
-			paths: [ './node_modules', './src/shared/js/' ]
-		} );
-
-		return b
-			.bundle()
-			.pipe( plumber( onError ) )
-			.pipe( source( `${domainName}/main.js` ) )
-			.pipe( buffer() )
-			.pipe( env !== 'dev' ? uglify() : buffer() )
-			.pipe( gulp.dest( './dist/' ) )
-			.pipe( livereload( liveReloadServer ) )
-			.on( 'error', gutil.log );
-	} );
-
 	gulp.task( domainName, [
-		`${domainName}-js`,
+		`${domainName}-compile-js`,
 		`${domainName}-static-templates`,
-		`${domainName}-css`,
-		`${domainName}-main`
+		`${domainName}-css`
 	] );
 
 }
@@ -263,8 +253,17 @@ gulp.task( 'copy-start', function() {
 		.on( 'error', gutil.log );
 } );
 
+
+
+gulp.task( 'copy-shared', function() {
+	return gulp.src( './src/shared/**/*' )
+		.pipe( plumber( onError ) )
+		.pipe( gulp.dest( './dist/shared/' ) )
+		.on( 'error', gutil.log );
+} );
+
 // Default Task
-gulp.task( 'default', [ 'copy-start' ].concat( _.map( pkg.domains, ( d, domainName ) => `${domainName}` ) ) );
+gulp.task( 'default', [ 'copy-start', 'copy-shared' ].concat( _.map( pkg.domains, ( d, domainName ) => `${domainName}` ) ) );
 
 function onError( err ) {
 	gutil.beep();
