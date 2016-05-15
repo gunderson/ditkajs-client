@@ -4,7 +4,7 @@
   "description": "Simple LED blink in node.js with resin.io on pi3",
   "main": "main.js",
   "scripts": {
-    "prestart": "gulp",
+    "prestart": "gulp --env prod",
     "start": "node --harmony ./dist/start"
   },
   "browserify": {
@@ -31,6 +31,7 @@
     "browserify": "^13.0.1",
     "domain": "0.0.1",
     "express": "^4.13.4",
+    "git-web-hooks": "0.0.3",
     "graceful-fs": "^4.1.3",
     "gulp": "*",
     "gulp-babel": "^6.1.2",

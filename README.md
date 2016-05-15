@@ -1,6 +1,46 @@
 # Tool Application Starter Kit (TASK)
 
-TASK is based on Backbone.js with layoutmanager, but has eliminated functionality that is unnecessary in a fully compiled, self contained build. We have extended it to be a full framework supporting multiple domains running on node.js.
+TASK is based on [Backbone.js](http://backbonejs.com) with [layoutmanager](http://layoutmanager.org), but has eliminated functionality that is unnecessary in a fully compiled, self contained build. We have extended it to be a full framework supporting multiple domains running on node.js.
+
+## Environment setup
+
+We prefer [Atom](http://atom.io) as our IDE and have provided a number of package and configuration files to help ensure we're all using the same coding standards.
+
+You will need node.js and git to be able to setup, build and run this project.
+
+### Requirements on OS X
+
+On **OS X** it's easy to install if you have [Homebrew](http://brew.sh). (if not you should definitely get it!)
+
+````bash
+brew install nodejs git && git clone https://github.com/gunderson/rpi3-lighthub-resin.git
+````
+
+### Requirements on Ubuntu
+
+Ubuntu is also fairly easy to setup:
+
+````bash
+sudo apt-get update && sudo apt-get install nodejs git && git clone https://github.com/gunderson/rpi3-lighthub-resin.git
+````
+
+### Requirements on Windows
+
+Windows is a but more difficult to setup due to poor availability of package managers. We strongly recommend upgrading to the most recent version of windows and enabling the new "[Windows Subsystem for Linux](http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/)"
+
+With this method, you can use the same commands as ubuntu to install your build dependencies:
+
+````bash
+apt-get update && apt-get install nodejs git && git clone https://github.com/gunderson/rpi3-lighthub-resin.git
+````
+
+## Project setup
+
+After you've cloned the repo, you'll want to also install all the project dependencies. From the project root, run the following command to get up and running.
+
+````bash
+npm install -g gulp && npm install && apm install --package-file atom-packages.txt
+````
 
 ## Fundamentals
 
