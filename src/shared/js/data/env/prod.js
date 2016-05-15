@@ -5,10 +5,10 @@ module.exports = _.defaults( defaults, {
 	'name': 'prod',
 	DOMAINS: {
 		'front-end': {
-			address: '10.0.1.8'
+			address: '10.0.1.14'
 		},
 		'api': {
-			address: '10.0.1.8'
+			address: '10.0.1.14'
 		}
 	}
 } );

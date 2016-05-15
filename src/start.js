@@ -6,9 +6,8 @@ require( 'colors' );
 
 var argv = require( 'yargs' )
 	.epilog( 'copyright 2015' )
-
-// version
-.alias( 'v', 'version' )
+	// version
+	.alias( 'v', 'version' )
 	.version( function() {
 		return pkg.version;
 	} )
@@ -22,7 +21,6 @@ var argv = require( 'yargs' )
 	.option( 'env', {
 		alias: 'environment',
 		describe: 'define the deployment target [dev|stage|prod]',
-		/* array | boolean | string */
 		type: 'string',
 		nargs: 1,
 		default: 'dev'
