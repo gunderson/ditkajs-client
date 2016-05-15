@@ -7,6 +7,7 @@ var gulp = require( 'gulp' ),
 	pug = require( 'gulp-pug' ),
 	tap = require( 'gulp-tap' ),
 	domain = require( 'domain' ),
+	uglify = require( 'gulp-uglify' ),
 	jstConcat = require( 'gulp-jst-concat' ),
 	plumber = require( 'gulp-plumber' ),
 	_ = require( 'lodash' ),
@@ -50,7 +51,7 @@ var argv = require( 'yargs' )
 
 var env = argv.env;
 
-gutil.log( 'Using environment', env );
+gutil.log( 'Using environment', gutil.colors.green( env ) );
 
 var GLOBALS = {
 	ENV: require( `./src/shared/js/data/env/${env}` )
@@ -84,6 +85,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 				var d = domain.create();
 
 				d.on( 'error', function( err ) {
+					gutil.beep();
 					gutil.log(
 						gutil.colors.red( 'Browserify compile error:' ),
 						err.message,
@@ -100,13 +102,14 @@ function setupDomainTasks( domainSettings, domainName ) {
 						file
 							.contents = browserify( {
 								entries: [ file.path ],
-								debug: ( env === 'dev' ),
+								debug: env === 'dev',
 								paths: [ `./src/${domainName}/js/`, './node_modules', './src/shared/js/' ]
 							} )
 							.bundle()
 							.pipe( plumber( onError ) )
 							.pipe( source( `${domainName}/index.js` ) )
 							.pipe( buffer() )
+							.pipe( env !== 'dev' ? uglify() : buffer() )
 							.pipe( gulp.dest( './dist/' ) )
 							.pipe( livereload( liveReloadServer ) )
 							.on( 'error', gutil.log );
@@ -237,6 +240,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 			.pipe( plumber( onError ) )
 			.pipe( source( `${domainName}/main.js` ) )
 			.pipe( buffer() )
+			.pipe( env !== 'dev' ? uglify() : buffer() )
 			.pipe( gulp.dest( './dist/' ) )
 			.pipe( livereload( liveReloadServer ) )
 			.on( 'error', gutil.log );
