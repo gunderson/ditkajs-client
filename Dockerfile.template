@@ -35,8 +35,9 @@ RUN make -C libsass -j5 install
 RUN git clone git://git.drogon.net/wiringPi
 WORKDIR /wiringPi
 RUN git pull origin
-RUN ./build -lwiringPi -lwiringPiDev
+RUN ./build
 WORKDIR /
+
 ##############
 
 RUN npm set progress=false && npm update && npm install -g gulp node-gyp
