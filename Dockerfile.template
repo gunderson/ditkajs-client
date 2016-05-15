@@ -5,18 +5,6 @@ ENV INITSYSTEM on
 
 # Your code goes here
 
-# RUN apt-get update && apt-get install rsync libpcre3-dev git make cmake gcc build-essential g++ swig ntp python2.7-dev
-# RUN apt-get upgrade nodejs
-# RUN apt-get update && apt-get install rsync libpcre3-dev git make cmake gcc build-essential g++ swig ntp python2.7-dev
-# RUN git clone https://github.com/intel-iot-devkit/mraa.git \
-# && cd mraa \
-# && mkdir build \
-# && cd build \
-# && cmake .. -DBUILDSWIGNODE=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr \
-# && make \
-# && make install --silent
-
-
 ##############
 
 # Add extra software sources
@@ -30,13 +18,19 @@ RUN apt-get install -y curl git build-essential automake libtool
 # Fetch sources
 
 RUN git clone https://github.com/sass/libsass.git
+RUN git clone https://github.com/sass/sassc.git libsass/sassc
 
 # Create configure script
-
-RUN autoreconf libsass --force --install
+WORKDIR /libsass
+RUN autoreconf --force --install
+RUN ./configure --disable-tests --enable-shared --prefix=/usr
+WORKDIR /
 
 # Build the library
 RUN make -C libsass -j5
+RUN make -C libsass -j5 install
+
+
 
 RUN git clone git://git.drogon.net/wiringPi
 WORKDIR /wiringPi
@@ -45,8 +39,7 @@ RUN ./build
 WORKDIR /
 ##############
 
-RUN npm update && npm install -g gulp node-gyp
-
+RUN npm set progress=false && npm update && npm install -g gulp node-gyp
 
 # Copies the package.json first for better cache on later pushes
 COPY package.json /usr/src/app/package.json
@@ -57,14 +50,9 @@ WORKDIR /usr/src/app
 
 # This will copy all files in our root to the working  directory in the container
 COPY . ./
+
 # This install npm dependencies on the resin.io build server,
 # making sure to clean up the artifacts it creates in order to reduce the image size.
-RUN JOBS=MAX npm install --unsafe-perm && npm cache clean && rm -rf /tmp/*
-# RUN npm install mraa \
-#   && npm cache clear \
-#   && npm config set unsafe-perm true -g --unsafe-perm \
-#   && rm -rf /tmp/*
-
-
+RUN npm set progress=false && JOBS=MAX npm install --unsafe-perm && npm cache clean && rm -rf /tmp/*
 
 CMD ["npm", "start"]
