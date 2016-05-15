@@ -1,9 +1,9 @@
 section#control-panel
-    h1 #{copy["control-panel"].mainTitle}
+    h1 #{GLOBALS.COPY["control-panel"].mainTitle}
     .form
         - var i = 1
         while (++i < 12)
             label #{i}
                 input(type="checkbox", value=(i))
-        button.play #{copy["control-panel"].Play}
-        button.stop #{copy["control-panel"].Stop}
+        button.play #{GLOBALS.COPY["control-panel"].Play}
+        button.stop #{GLOBALS.COPY["control-panel"].Stop}

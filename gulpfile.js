@@ -36,8 +36,8 @@ var domains = {
 };
 
 var env = "dev";
-var data = {
-	env: require( `./src/shared/js/data/env/${env}` )
+var GLOBALS = {
+	ENV: require( `./src/shared/js/data/env/${env}` )
 };
 
 _.each( domains, setupDomainTasks );
@@ -106,6 +106,7 @@ function setupDomainTasks( domainSettings ) {
 			_.each( files, ( filename ) => {
 				langData[ lang ][ path.basename( filename, ".json" ) ] = require( path.resolve( copyPath, lang, filename ) );
 			} );
+			GLOBALS.COPY = langData[ lang ];
 			return gulp.src( [ `./src/${domainSettings.domainName}/pug/static/**/*.pug`, `!./src/${domainSettings.domainName}/pug/static/**/_*.pug` ] )
 				.pipe( plumber() )
 				.pipe( rename( function ( path ) {
@@ -115,8 +116,8 @@ function setupDomainTasks( domainSettings ) {
 				.pipe( pug( {
 					pretty: true,
 					locals: {
-						data: data,
-						copy: langData[ lang ]
+						GLOBALS: GLOBALS,
+						lang: lang
 					}
 				} ) )
 				.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
@@ -142,6 +143,11 @@ function setupDomainTasks( domainSettings ) {
 			.pipe( plumber() )
 			.pipe( pug( {
 				pretty: true,
+			} ) )
+			.pipe( rename( function ( path ) {
+				path.dirname = "home";
+				path.extname = "";
+				path.relative = true;
 			} ) )
 			.pipe( jstConcat( `templates.js` ) )
 			.pipe( gulp.dest( `./src/${domainSettings.domainName}/js/` ) )

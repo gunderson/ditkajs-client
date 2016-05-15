@@ -3,22 +3,21 @@ var Emitter = require( "backbone-events-standalone" );
 var AbstractModel = require( "AbstractModel" );
 
 class Collection extends Emitter {
-	var _models, _options;
 
 	constructor( models, options ) {
-		_options = _.extend( {
+		this._options = _.extend( {
 			model: AbstractModel,
 			url: null,
 		}, options );
 
-		_models = [];
+		this._models = [];
 		reset( models );
 	}
 
 	// ---------------------------------------------------
 
 	[ Symbol.iterator ]() {
-		return _models.values()
+		return this._models.values()
 	}
 
 	// ---------------------------------------------------
@@ -80,20 +79,24 @@ class Collection extends Emitter {
 				attributes.id = _.unique();
 			}
 			// create new model
-			var m = new _options.model( attributes );
-			// register in list
-			_models.push( m );
-			// listen to them
-			m.on( "change", forwardChangeEvent );
+			var m = new this._options.model( attributes );
 
+			// register in list only once
+			// already check above to see if it exists
+			this._models.push( m );
+			// tell the model it's a member here
+			m.addToCollection( this, options );
+			// listen to them
+			this.listenTo( m, "change", this.forwardEvent );
 			if ( !options.silent ) {
 				this.trigger( "add", m );
 			}
+
 			return m;
 		} );
 		// sort the models
 		if ( _options.sort ) {
-			_models = _models.sort( _options.sort );
+			this._models = this._models.sort( this._options.sort );
 			updated = updated.sort( _options.sort );
 		}
 		return updated;
@@ -112,10 +115,14 @@ class Collection extends Emitter {
 			}
 			var index = _models.indexOf( model );
 			if ( index > -1 ) {
-				this.off( model );
-				_models.splice( index, 1 );
+				this.stopListening( model );
+				this._models.splice( index, 1 );
+				model.removeFromCollection( this, options )
 				if ( !options.silent ) {
-					this.trigger( "remove", model );
+					this.trigger( "remove", {
+						collection: this,
+						model: model
+					} );
 				}
 			}
 		} )
@@ -125,7 +132,7 @@ class Collection extends Emitter {
 	// ---------------------------------------------------
 
 	empty( options ) {
-		this.remove( _models, options );
+		this.remove( this._models, options );
 	}
 
 	// ---------------------------------------------------
@@ -140,7 +147,7 @@ class Collection extends Emitter {
 			// convert to match condition objects
 			matchConditions = _.map( matchConditions, ( id ) => {
 				return {
-					id
+					id: id
 				};
 			} );
 		}
@@ -148,7 +155,7 @@ class Collection extends Emitter {
 		var models = _( matchConditions )
 			// for each condition, find a list of models that matches
 			.map( ( condition ) => {
-				return _.filter( _models, condition );
+				return _.filter( this._models, condition );
 			} )
 			.flattten()
 			// only include models once in list
@@ -165,7 +172,7 @@ class Collection extends Emitter {
 	// ---------------------------------------------------
 
 	at( index ) {
-		return _models[ index ];
+		return this._models[ index ];
 	}
 
 	// ---------------------------------------------------
@@ -178,25 +185,30 @@ class Collection extends Emitter {
 
 	// ---------------------------------------------------
 
-	forwardChangeEvent( data ) {
-		this.trigger( "change", _.extend( {
-			collection: this
-		}, data ) );
+	forwardEvent( data ) {
+		if ( data.forward === false ) return this;
+		data.parents = data.parents || [];
+		data.parents.push( this );
+		this.trigger( data.type, data );
 		return this;
 	}
 
 	// ---------------------------------------------------
 
-	toJSON() => _.map( _models, ( m ) => m.toJSON() );
+	toJSON( refs ) => _.map( this._models, ( m ) => m.toJSON( refs ) );
+
+	// ---------------------------------------------------
+
+	getIDs() => _.map( this._models, ( m ) => m.id );
 
 	// ---------------------------------------------------
 
 	get length() {
-		return _models.length;
+		return this._models.length;
 	}
 
 	get models() {
-		return _models;
+		return this._models;
 	}
 
 	// ---------------------------------------------------
@@ -207,3 +219,5 @@ class Collection extends Emitter {
 	}
 
 }
+
+module.exports = Collection;
