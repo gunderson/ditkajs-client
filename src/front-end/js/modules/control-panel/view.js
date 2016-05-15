@@ -1,33 +1,33 @@
-"use strict";
-var $ = require( "jquery" );
-var _ = require( "lodash" );
-var io = require( "socket.io-client" );
+'use strict';
+var $ = require( 'jquery' );
+// var _ = require( 'lodash' );
+// var io = require( 'socket.io-client' );
 
-// var io = require("socket.io-client");
 
-// var socket = io('http://localhost');
-// socket.on('connect', function() {});
+// var localIp = '192.168.6.249';
+var localIp = GLOBALS.DOMAINS.api.address;
+var localPort = GLOBALS.DOMAINS.api.serverPort;
+
+// var socket = io( 'http://localhost' );
+// socket.on( 'connect', function() {} );
 // socket.on('event', function(data) {});
 // socket.on('disconnect', function() {});
 
-// var localIp = "192.168.6.249";
-var localIp = "10.0.1.8";
-var localPort = "3000";
-
-$( "button.play" )
+$( 'button.play' )
 	.click( () => $.get( `http://${localIp}:${localPort}/play` ) );
-$( "button.stop" )
+$( 'button.stop' )
 	.click( () => $.get( `http://${localIp}:${localPort}/stop` ) );
 
-$( `input:checkbox` )
-	.on( "change", ( evt ) => {
-		let el = evt.target;
-		if ( el.checked ) {
-			$( `input:checkbox` )
-				.each( ( i, el ) => el.value === i ? el.checked = true : el.checked = false )
-
-			$.get( `http://${localIp}:${localPort}/led/${ el.value }/on` );
+$( 'input:checkbox' )
+	.on( 'change', ( evt ) => {
+		let target = evt.target;
+		if ( target.checked ) {
+			$( 'input:checkbox' )
+				.each( ( i, el ) => {
+					target.value === i ? el.checked = true : el.checked = false;
+				} );
+			$.get( `http://${localIp}:${localPort}/led/${target.value}/on` );
 		} else {
-			$.get( `http://${localIp}:${localPort}/led/${ el.value }/off` );
+			$.get( `http://${localIp}:${localPort}/led/${target.value}/off` );
 		}
 	} );

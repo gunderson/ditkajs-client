@@ -1,199 +1,241 @@
+require( 'babelify' );
 var gulp = require( 'gulp' ),
 	gutil = require( 'gulp-util' ),
 	sass = require( 'gulp-sass' ),
 	csso = require( 'gulp-csso' ),
 	uglify = require( 'gulp-uglify' ),
-	babelify = require( 'babelify' ),
 	browserify = require( 'browserify' ),
 	pug = require( 'gulp-pug' ),
 	jstConcat = require( 'gulp-jst-concat' ),
 	plumber = require( 'gulp-plumber' ),
 	_ = require( 'lodash' ),
-	concat = require( 'gulp-concat' ),
-	sourcemaps = require( 'gulp-sourcemaps' ),
+	// sourcemaps = require( 'gulp-sourcemaps' ),
 	livereload = require( 'gulp-livereload' ), // Livereload plugin needed: https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei
 	tinylr = require( 'tiny-lr' ),
-	marked = require( 'marked' ), // For :markdown filter in jade
+	// marked = require( 'marked' ), // For :markdown filter in pug
 	path = require( 'path' ),
 	fs = require( 'fs' ),
-	cp = require( 'child_process' ),
+	// cp = require( 'child_process' ),
 	source = require( 'vinyl-source-stream' ),
 	buffer = require( 'vinyl-buffer' ),
-	rename = require( "gulp-rename" );
+	rename = require( 'gulp-rename' ),
+	pkg = require( './package.json' );
 
+// ----------------------------------------------------------------
+// CLI
 
-var domains = {
-	frontEndSettings: {
-		domainName: "front-end",
-		serverPort: 80,
-		lrPort: 35729,
-	},
-	apiSettings: {
-		domainName: "api",
-		serverPort: 3000,
-		lrPort: 35728,
-	},
-};
+var argv = require( 'yargs' )
+	.epilog( 'copyright 2015' )
 
-var env = "dev";
+// version
+.alias( 'v', 'version' )
+	.version( function() {
+		return pkg.version;
+	} )
+	.describe( 'v', 'show version information' )
+
+// help text
+.alias( 'h', 'help' )
+	.help( 'help' )
+	.usage( 'Usage: $0 -env [dev|stage|prod]' )
+	.showHelpOnFail( false, 'Specify --help for available options' )
+
+// environment
+.option( 'env', {
+	alias: 'environment',
+	describe: 'define the deployment target [dev|stage|prod]',
+	/* array | boolean | string */
+	type: 'string',
+	nargs: 1,
+	default: 'dev'
+} );
+
+var env = argv.env;
+
+gutil.log( 'Using environment', env );
+
 var GLOBALS = {
 	ENV: require( `./src/shared/js/data/env/${env}` )
 };
 
-_.each( domains, setupDomainTasks );
+_.each( pkg.domains, setupDomainTasks );
 
-var serverProcess;
-
-function setupDomainTasks( domainSettings ) {
-	liveReloadServer = tinylr();
+function setupDomainTasks( domainSettings, domainName ) {
+	var liveReloadServer = tinylr();
 	// --- Basic Tasks ---
-	gulp.task( `${domainSettings.domainName}-css`, function () {
-		return gulp.src( `./src/${domainSettings.domainName}/sass/**/*.sass` )
+	gulp.task( `${domainName}-css`, function() {
+		return gulp
+			.src( `./src/${domainName}/sass/**/*.sass` )
 			.pipe( plumber() )
-			.pipe(
-				sass( {
-					includePaths: [ `./src/${domainSettings.domainName}/sass/` ],
-					errLogToConsole: true,
-				} ) )
+			.pipe( sass( {
+				includePaths: [ `./src/${domainName}/sass/` ],
+				errLogToConsole: true
+			} ) )
 			.pipe( csso() )
-			.pipe( gulp.dest( `./dist/${domainSettings.domainName}/` ) )
+			.pipe( gulp.dest( `./dist/${domainName}/` ) )
 			.pipe( livereload( liveReloadServer ) )
 			.on( 'error', gutil.log );
 	} );
 
-	gulp.task( `${domainSettings.domainName}-js`, function () {
+	gulp.task( `${domainName}-js`, [ `${domainName}-static-templates` ], function() {
 		var b = browserify( {
-			entries: [ `./src/${domainSettings.domainName}/js/index.js` ],
-			debug: true,
-			paths: [ `./src/${domainSettings.domainName}/js/`, './node_modules', `./src/shared/js/` ],
+			entries: [ `./src/${domainName}/js/index.js` ],
+			debug: ( env === 'dev' ),
+			paths: [ `./src/${domainName}/js/`, './node_modules', './src/shared/js/' ]
 		} );
 
-		return b.bundle()
+		return b
+			.bundle()
 			.pipe( plumber() )
-			.pipe( source( `${domainSettings.domainName}/index.js` ) )
+			.pipe( source( `${domainName}/index.js` ) )
 			.pipe( buffer() )
-			.pipe( gulp.dest( `./dist/` ) )
+			.pipe( ( env === 'dev' ) ? buffer() : uglify() )
+			.pipe( gulp.dest( './dist/' ) )
 			.pipe( livereload( liveReloadServer ) )
-			.on( 'error', gutil.log )
+			.on( 'error', gutil.log );
 	} );
 
 	function listFolders( dir ) {
-		return fs.readdirSync( dir )
-			.filter( function ( file ) {
-				return fs.statSync( path.join( dir, file ) )
+		return fs
+			.readdirSync( dir )
+			.filter( function( file ) {
+				return fs
+					.statSync( path.join( dir, file ) )
 					.isDirectory();
 			} );
 	}
 
 	function listFiles( dir ) {
-		return fs.readdirSync( dir )
-			.filter( function ( file ) {
-				return !fs.statSync( path.join( dir, file ) )
+		return fs
+			.readdirSync( dir )
+			.filter( function( file ) {
+				return !fs
+					.statSync( path.join( dir, file ) )
 					.isDirectory();
 			} );
 	}
 
-	gulp.task( `${domainSettings.domainName}-static-templates`, function () {
-		var copyPath = "./src/shared/js/data/copy/"
-		var langs = listFolders( copyPath );
-		var langData = {};
-		if ( !langs.length ) throw new Error( "No language folders in ./src/shared/js/data/copy/" );
-		var files = listFiles( path.join( copyPath, langs[ 0 ] ) );
-		if ( !files.length ) throw new Error( "No data files in ./src/shared/js/data/copy/" + langs[ 0 ] );
-
-		return langs.map( ( lang ) => {
-			langData[ lang ] = {};
-			_.each( files, ( filename ) => {
-				langData[ lang ][ path.basename( filename, ".json" ) ] = require( path.resolve( copyPath, lang, filename ) );
-			} );
-			GLOBALS.COPY = langData[ lang ];
-			return gulp.src( [ `./src/${domainSettings.domainName}/pug/static/**/*.pug`, `!./src/${domainSettings.domainName}/pug/static/**/_*.pug` ] )
-				.pipe( plumber() )
-				.pipe( rename( function ( path ) {
-					path.basename += `.${lang}`;
-					path.extname = ".html";
-				} ) )
-				.pipe( pug( {
-					pretty: true,
-					locals: {
-						GLOBALS: GLOBALS,
-						lang: lang
-					}
-				} ) )
-				.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
-				.pipe( livereload( liveReloadServer ) )
-				.on( 'error', gutil.log )
-				.on( 'end', () => {
-					if ( lang === "en" ) {
-						gulp.src( `./dist/${domainSettings.domainName}/index.en.html` )
-							.pipe( plumber() )
-							.pipe( rename( function ( path ) {
-								path.basename = "index";
-								path.extname = ".html";
-							} ) )
-							.pipe( gulp.dest( `./dist/${domainSettings.domainName}` ) )
-					}
+	gulp
+		.task( `${domainName}-static-templates`, function() {
+			var copyPath = './src/shared/js/data/copy/';
+			var langs = listFolders( copyPath );
+			var langData = {};
+			if ( !langs.length ) {
+				throw new Error( 'No language folders in ./src/shared/js/data/copy/' );
+			}
+			var files = listFiles( path.join( copyPath, langs[ 0 ] ) );
+			if ( !files.length ) {
+				throw new Error( 'No data files in ./src/shared/js/data/copy/' + langs[ 0 ] );
+			}
+			return langs.map( ( lang ) => {
+				langData[ lang ] = {};
+				_.each( files, ( filename ) => {
+					langData[ lang ][ path.basename( filename, '.json' ) ] = require( path.resolve( copyPath, lang, filename ) );
 				} );
+				GLOBALS.COPY = langData[ lang ];
+				return gulp
+					.src( [ `./src/${domainName}/pug/static/**/*.pug`, `!./src/${domainName}/pug/static/**/_*.pug` ] )
+					.pipe( plumber() )
+					.pipe( rename( function( path ) {
+						path.basename += `.${lang}`;
+						path.extname = '.html';
+					} ) )
+					.pipe( pug( {
+						pretty: true,
+						locals: {
+							GLOBALS: GLOBALS,
+							lang: lang
+						}
+					} ) )
+					.pipe( gulp.dest( `./dist/${domainName}` ) )
+					.pipe( livereload( liveReloadServer ) )
+					.on( 'error', gutil.log )
+					.on( 'end', () => {
+						if ( lang === 'en' ) {
+							gulp
+								.src( `./dist/${domainName}/index.en.html` )
+								.pipe( plumber() )
+								.pipe( rename( function( path ) {
+									path.basename = 'index';
+									path.extname = '.html';
+								} ) )
+								.pipe( gulp.dest( `./dist/${domainName}` ) );
+						}
+					} );
+			} );
 		} );
 
-	} );
-
-	gulp.task( `${domainSettings.domainName}-dynamic-templates`, function () {
-		var stream = gulp.src( [ `./src/${domainSettings.domainName}/pug/dynamic/**/*.pug`, `!./src/${domainSettings.domainName}/pug/dynamic/**/_*.pug` ] )
+	gulp.task( `${domainName}-dynamic-templates`, function() {
+		var stream = gulp
+			.src( [ `./src/${domainName}/pug/dynamic/**/*.pug`, `!./src/${domainName}/pug/dynamic/**/_*.pug` ] )
 			.pipe( plumber() )
 			.pipe( pug( {
-				pretty: true,
+				pretty: true
 			} ) )
-			.pipe( rename( function ( path ) {
-				path.dirname = "home";
-				path.extname = "";
+			.pipe( rename( function( path ) {
+				path.dirname = 'home';
+				path.extname = '';
 				path.relative = true;
 			} ) )
-			.pipe( jstConcat( `templates.js` ) )
-			.pipe( gulp.dest( `./src/${domainSettings.domainName}/js/` ) )
+			.pipe( jstConcat( 'templates.js' ) )
+			.pipe( gulp.dest( `./src/${domainName}/js/` ) )
 			.pipe( livereload( liveReloadServer ) )
-			.on( 'error', gutil.log )
-			.on( 'end', () => gulp.run( `${domainSettings.domainName}-js` ) );
-
+			.on( 'error', gutil.log );
 		return stream;
 	} );
 
-
-	gulp.task( `${domainSettings.domainName}-watch`, function () {
-		liveReloadServer.listen( domainSettings.lrPort, function ( err ) {
-			if ( err ) {
-				return console.log( err );
-			}
-			gulp.watch( `./src/${domainSettings.domainName}/sass/**/*.sass`, [ `${domainSettings.domainName}-css` ] );
-			gulp.watch( `./src/${domainSettings.domainName}/js/**/*.js`, [ `${domainSettings.domainName}-js` ] );
-			gulp.watch( `./src/${domainSettings.domainName}/jade/static/**/*.jade`, [ `${domainSettings.domainName}-static-templates` ] );
-			gulp.watch( `./src/${domainSettings.domainName}/jade/dynamic/**/*.jade`, [ `${domainSettings.domainName}-dynamic-templates` ] );
-		} );
+	// TODO: process assets
+	gulp.task( `${domainName}-copy-assets`, function() {
+		return gulp
+			.src( `./src/${domainName}/assets/**/*` )
+			.pipe( plumber() )
+			.pipe( gulp.dest( `./src/${domainName}/assets/` ) )
+			.on( 'error', gutil.log );
 	} );
 
-	gulp.task( domainSettings.domainName, [
-		`${domainSettings.domainName}-dynamic-templates`,
-		`${domainSettings.domainName}-static-templates`,
-		`${domainSettings.domainName}-css`,
-	] );
+	gulp.task( `${domainName}-watch`, function() {
+		liveReloadServer
+			.listen( domainSettings.lrPort, function( err ) {
+				if ( err ) {
+					return console.log( err );
+				}
+				gulp.watch( `./src/${domainName}/sass/**/*.sass`, [ `${domainName}-css` ] );
+				gulp.watch( `./src/${domainName}/js/**/*.js`, [ `${domainName}-js` ] );
+				gulp.watch( `./src/${domainName}/jade/static/**/*.pug`, [ `${domainName}-static-templates` ] );
+				gulp.watch( `./src/${domainName}/jade/dynamic/**/*.pug`, [ `${domainName}-js` ] );
+			} );
+	} );
+
+	gulp.task( `${domainName}-main`, function() {
+		var b = browserify( {
+			entries: [ `./src/${domainName}/js/main.js` ],
+			debug: true,
+			bare: true,
+			paths: [ './node_modules', './src/shared/js/' ]
+		} );
+
+		return b
+			.bundle()
+			.pipe( plumber() )
+			.pipe( source( 'main.js' ) )
+			.pipe( buffer() )
+			.pipe( gulp.dest( './dist/' ) )
+			.pipe( livereload( liveReloadServer ) )
+			.on( 'error', gutil.log );
+	} );
+
+	gulp.task( domainName, [ `${domainName}-js`, `${domainName}-static-templates`, `${domainName}-css`, `${domainName}-main` ] );
 
 }
 
-gulp.task( `main-js`, function () {
-	var b = browserify( {
-		entries: [ `./src/main.js` ],
-		debug: true,
-		paths: [ './node_modules', `./src/shared/js/` ],
+gulp
+	.task( 'copy-start', function() {
+		return gulp
+			.src( './src/start.js' )
+			.pipe( plumber() )
+			.pipe( gulp.dest( './dist/' ) )
+			.on( 'error', gutil.log );
 	} );
 
-	return b.bundle()
-		.pipe( plumber() )
-		.pipe( source( `main.js` ) )
-		.pipe( buffer() )
-		.pipe( gulp.dest( `./dist/` ) )
-		.pipe( livereload( liveReloadServer ) )
-		.on( 'error', gutil.log )
-} );
-
 // Default Task
-gulp.task( 'default', _.map( domains, ( d ) => `${d.domainName}` ) );
+gulp.task( 'default', [ 'copy-start' ].concat( _.map( pkg.domains, ( d, domainName ) => `${domainName}` ) ) );

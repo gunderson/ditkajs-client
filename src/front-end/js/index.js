@@ -1,5 +1,8 @@
-"use strict";
-var _ = require( "lodash" );
-window.TEMPLATES = require( "./templates" );
+'use strict';
+// Define Global Vars
+window.TEMPLATES = require( './lib/templates' );
+// Start App
 window.APP = {};
-var controlPanelView = require( "./modules/control-panel/view" );
+
+// var controlPanelView =
+require( './modules/control-panel/view' );

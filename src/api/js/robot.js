@@ -1,13 +1,12 @@
-// "use strict";
-var raspi = require( "raspi-io" );
-var _ = require( "lodash" );
-var five = require( "johnny-five" );
+// 'use strict';
+// var _ = require( 'lodash' );
+var Raspi = require( 'raspi-io' );
+var five = require( 'johnny-five' );
 
 
 var board = new five.Board( {
-	io: new raspi(),
-	repl: false,
-	//debug: false,
+	io: new Raspi(),
+	repl: false
 } );
 
 var currentLEDIndex = 0;
@@ -19,12 +18,12 @@ var tickIntervalMillis = 1000 / ticksPerSecond;
 var startTime = 0;
 var patternFunction = sweep;
 
-board.on( "ready", setup );
+board.on( 'ready', setup );
 
 function setup() {
 	currentLEDIndex = 0;
 	// leds = new five.Leds( [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] );
-	leds = new five.Leds( [ 2, 3, 4, 5, ] );
+	leds = new five.Leds( [ 2, 3, 4, 5 ] );
 	play();
 }
 
@@ -47,7 +46,7 @@ function loop() {
 }
 
 function sweep( tick ) {
-	leds.each( function ( led ) {
+	leds.each( function( led ) {
 		led.off();
 	} );
 
@@ -57,7 +56,7 @@ function sweep( tick ) {
 
 function led( model ) {
 	model.id = model.id || 0;
-	model.state = model.state || "off";
+	model.state = model.state || 'off';
 	// stop loop
 	stop();
 	// kill other leds
@@ -70,5 +69,5 @@ function led( model ) {
 module.exports = {
 	led,
 	play,
-	stop,
+	stop
 };

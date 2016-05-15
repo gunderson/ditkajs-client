@@ -1,23 +1,24 @@
-var _ = require( "lodash" );
-var Emitter = require( "backbone-events-standalone" );
-var AbstractModel = require( "AbstractModel" );
+var _ = require( 'lodash' );
+var Emitter = require( 'backbone-events-standalone' );
+var AbstractModel = require( 'AbstractModel' );
 
 class Collection extends Emitter {
 
 	constructor( models, options ) {
+		super();
 		this._options = _.extend( {
-			model: AbstractModel,
-			url: null,
+			Model: AbstractModel,
+			url: null
 		}, options );
 
 		this._models = [];
-		reset( models );
+		this.reset( models );
 	}
 
 	// ---------------------------------------------------
 
 	[ Symbol.iterator ]() {
-		return this._models.values()
+		return this._models.values();
 	}
 
 	// ---------------------------------------------------
@@ -29,7 +30,7 @@ class Collection extends Emitter {
 		// create new models
 		_.each( models, ( m ) => this.add( m, options ) );
 		if ( !options.silent ) {
-			this.trigger( "reset", this );
+			this.trigger( 'reset', this );
 		}
 		return this;
 	}
@@ -57,7 +58,7 @@ class Collection extends Emitter {
 
 	add( models, options ) {
 		options = options || {};
-		//if models isn't an array, make it one
+		// if models isn't an array, make it one
 		models = _.isArray( models ) ? models : [ models ];
 		var updated = _.map( models, ( attributes ) => {
 			// create new models
@@ -79,7 +80,7 @@ class Collection extends Emitter {
 				attributes.id = _.unique();
 			}
 			// create new model
-			var m = new this._options.model( attributes );
+			var m = new this._options.Model( attributes );
 
 			// register in list only once
 			// already check above to see if it exists
@@ -87,17 +88,17 @@ class Collection extends Emitter {
 			// tell the model it's a member here
 			m.addToCollection( this, options );
 			// listen to them
-			this.listenTo( m, "change", this.forwardEvent );
+			this.listenTo( m, 'change', this.forwardEvent );
 			if ( !options.silent ) {
-				this.trigger( "add", m );
+				this.trigger( 'add', m );
 			}
 
 			return m;
 		} );
 		// sort the models
-		if ( _options.sort ) {
+		if ( this._options.sort ) {
 			this._models = this._models.sort( this._options.sort );
-			updated = updated.sort( _options.sort );
+			updated = updated.sort( this._options.sort );
 		}
 		return updated;
 	}
@@ -106,26 +107,26 @@ class Collection extends Emitter {
 
 	remove( models, options ) {
 		options = options || {};
-		//if models isn't an array, make it one
+		// if models isn't an array, make it one
 		models = _.isArray( models ) ? models : [ models ];
-		_.each( models, ( m ) => {
+		_.each( models, ( model ) => {
 			// allow ids to be passed
-			if ( typeof model !== "object" ) {
+			if ( typeof model !== 'object' ) {
 				model = this.get( model );
 			}
-			var index = _models.indexOf( model );
+			var index = this._models.indexOf( model );
 			if ( index > -1 ) {
 				this.stopListening( model );
 				this._models.splice( index, 1 );
-				model.removeFromCollection( this, options )
+				model.removeFromCollection( this, options );
 				if ( !options.silent ) {
-					this.trigger( "remove", {
+					this.trigger( 'remove', {
 						collection: this,
 						model: model
 					} );
 				}
 			}
-		} )
+		} );
 		return this;
 	}
 
@@ -143,7 +144,7 @@ class Collection extends Emitter {
 
 		// an array of objects is assumed to be a list of match condition objects
 		// an array of non-objects is assumed to be a list of ids
-		if ( typeof matchConditions[ 0 ] !== "object" ) {
+		if ( typeof matchConditions[ 0 ] !== 'object' ) {
 			// convert to match condition objects
 			matchConditions = _.map( matchConditions, ( id ) => {
 				return {
@@ -195,11 +196,15 @@ class Collection extends Emitter {
 
 	// ---------------------------------------------------
 
-	toJSON( refs ) => _.map( this._models, ( m ) => m.toJSON( refs ) );
+	toJSON( refs ) {
+		return _.map( this._models, ( m ) => m.toJSON( refs ) );
+	}
 
 	// ---------------------------------------------------
 
-	getIDs() => _.map( this._models, ( m ) => m.id );
+	getIDs() {
+		return _.map( this._models, ( m ) => m.id );
+	}
 
 	// ---------------------------------------------------
 
@@ -214,7 +219,7 @@ class Collection extends Emitter {
 	// ---------------------------------------------------
 
 	set sortBy( attr ) {
-		options.sort = ( a, b ) => b[ attr ] - a[ attr ];
+		this._options.sort = ( a, b ) => b[ attr ] - a[ attr ];
 		return attr;
 	}
 

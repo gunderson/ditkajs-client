@@ -1,6 +1,14 @@
-var defaults = require( "./default.js" ),
-	_ = require( "lodash" );
+var defaults = require( './default.js' ),
+	_ = require( 'lodash' );
 
 module.exports = _.defaults( defaults, {
-	"name": "stage"
+	'name': 'stage',
+	DOMAINS: {
+		'front-end': {
+			address: '10.0.1.8'
+		},
+		'api': {
+			address: '10.0.1.8'
+		}
+	}
 } );

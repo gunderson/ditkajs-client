@@ -1,31 +1,32 @@
-var _ = require( "lodash" );
-var $ = require( "jquery" );
-var Emitter = require( "backbone-events-standalone" );
+var _ = require( 'lodash' );
+var $ = require( 'jquery' );
+var Emitter = require( 'backbone-events-standalone' );
 
 class Model extends Emitter {
 	constructor( attributes, options ) {
+		super();
 		this._collections = [];
 
 		this._options = _.extend( {
-			"toJSONRefs": false,
-			"omitAttributes": []
+			'toJSONRefs': false,
+			'omitAttributes': []
 		}, options );
 
 		this._attributes = _.defaults( attributes, {
 			id: _.uniqueId(),
 			url: null
 		} );
-		this._attributes.forEach( this.makeAttribute )
+		this._attributes.forEach( this.makeAttribute );
 	}
 
 	[ Symbol.iterator ]() {
-		return this._attributes.values()
+		return this._attributes.values();
 	}
 
 	// ---------------------------------------------------
 
 	fetch() {
-
+		return $.get();
 	}
 
 	// ---------------------------------------------------
@@ -44,7 +45,7 @@ class Model extends Emitter {
 			.cloneDeepWith( ( a ) => {
 				// pass toJSONRefs to tell collections that may be children of this model whether to
 				// save their children as objects or just IDs that can be picked up as references from a master collection
-				if ( a.toJSON ) return a.toJSON( this._options.toJSONRefs )
+				if ( a.toJSON ) return a.toJSON( this._options.toJSONRefs );
 			} )
 			.value();
 	}
@@ -55,17 +56,17 @@ class Model extends Emitter {
 		if ( this._collections.indexOf( collection ) === -1 ) {
 			this._collections.push( collection );
 
-			//create listeners on collection for attribute changes
+			// create listeners on collection for attribute changes
 			_.each( this._attributes, ( val, key ) => {
 				collection.listenTo( this, `change:${key}`, collection.forwardEvent );
 			} );
 
-			//only trigger if model is not already a member
+			// only trigger if model is not already a member
 			if ( !options.silent ) {
-				this.trigger( "addToCollection", {
+				this.trigger( 'addToCollection', {
 					collection: collection,
 					model: this
-				} )
+				} );
 			}
 		}
 		return this;
@@ -76,9 +77,9 @@ class Model extends Emitter {
 	removeFromCollection( collection, options ) {
 		if ( this._collections.indexOf( collection ) > -1 ) {
 			this._collections.splice( this._collections.indexOf( collection ), 1 );
-			//only trigger if model is a member
+			// only trigger if model is a member
 			if ( !options.silent ) {
-				this.trigger( "removeFromCollection", {
+				this.trigger( 'removeFromCollection', {
 					collection: collection,
 					model: this
 				} );
@@ -90,18 +91,18 @@ class Model extends Emitter {
 	// ---------------------------------------------------
 
 	destroy() {
-		this.trigger( "addToCollection", {
-			collection: collection,
-			model: this
-		} )
+		this.stopListening();
+		this._collections = [];
+		this._attributes = [];
+		this.trigger( 'destroy', this );
 		return this;
 	}
 
 	// ---------------------------------------------------
 
-	makeAttribute( value, name ) => {
+	makeAttribute( value, name ) {
 		_.each( this._collections, ( c ) => {
-			//create forwarder on collection for attribute
+			// create forwarder on collection for attribute
 			c.listenTo( this, `change:${name}`, c.forwardEvent );
 		} );
 		Object.defineProperty( this, name, {
@@ -117,10 +118,10 @@ class Model extends Emitter {
 
 				// if it is an emitter, listen for change events
 				if ( _.isFunction( val.trigger ) ) {
-					this.listenTo( val, "change", this.forwardEvent )
+					this.listenTo( val, 'change', this.forwardEvent );
 				}
 			},
-			get: () => this._attributes[ name ];
+			get: () => this._attributes[ name ]
 		} );
 	}
 
@@ -136,7 +137,9 @@ class Model extends Emitter {
 
 	// ---------------------------------------------------
 
-	get attributes() => _attributes;
+	get attributes() {
+		return this._attributes;
+	}
 }
 
-module.exports = Model
+module.exports = Model;
