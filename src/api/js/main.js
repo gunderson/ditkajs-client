@@ -2,7 +2,7 @@
 var Server = require( './server' );
 var Robot = require( './robot' );
 
-function start( data ) {
+function start( GLOBALS ) {
 	var apiServer = new Server( GLOBALS );
 	var robot = new Robot( GLOBALS );
 
