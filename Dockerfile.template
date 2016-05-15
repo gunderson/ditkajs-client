@@ -35,7 +35,7 @@ RUN make -C libsass -j5 install
 RUN git clone git://git.drogon.net/wiringPi
 WORKDIR /wiringPi
 RUN git pull origin
-RUN ./build
+RUN ./build -lwiringPi -lwiringPiDev
 WORKDIR /
 ##############
 
