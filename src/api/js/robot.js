@@ -49,7 +49,7 @@ class Robot extends EventEmitter {
 		var loopTime = now - this.lastLoopTime;
 		this.runTime += loopTime;
 		var tick = _.floor( this.runTime / this.tickIntervalMillis );
-		this.lastLoopTime = now();
+		this.lastLoopTime = now;
 		this.patternFunction( tick );
 	}
 
