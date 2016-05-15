@@ -1,4 +1,4 @@
 module.exports = {
-	DOMAINS: require( '../../../../package.json' )
+	DOMAINS: require( '../../../../../package.json' )
 		.domains
 };
