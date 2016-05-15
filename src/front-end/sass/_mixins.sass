@@ -1,0 +1,43 @@
+@mixin transition($args...)
+  -webkit-transition: $args
+  -moz-transition: $args
+  -ms-transition: $args
+  -o-transition: $args
+  transition: $args
+
+
+$break-small-phones: 480px
+$break-tablets: 960px
+$break-laptops: 1200px
+$break-tvs: 1900px
+
+@mixin respond-to($media)
+  @if $media == small-phones
+    @media only screen and (max-width: $break-small-phones)
+      @content
+
+  @else if $media == phones
+    @media only screen and (min-width: $break-small-phones + 1) and (max-width: break-tablets)
+      @content
+
+  @else if $media == tablets
+    @media only screen and (min-width: $break-tablets + 1) and (max-width: break-laptops)
+      @content
+
+  @else if $media == laptops
+    @media only screen and (min-width: $break-laptops) and (max-width: $break-tvs - 1)
+      @content
+
+  @else if $media == tvs
+    @media only screen and (min-width: $break-tvs)
+      @content
+
+  // usage
+
+  // .profile-pic {
+  //   float: left;
+  //   width: 250px;
+  //   @include respond-to(handhelds) { width: 100% ;}
+  //   @include respond-to(medium-screens) { width: 125px; }
+  //   @include respond-to(wide-screens) { float: none; }
+  // }

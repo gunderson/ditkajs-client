@@ -5,17 +5,41 @@ var EventEmitter = require( './EventEmitter' );
 class Model extends EventEmitter {
 	constructor( attributes, options ) {
 		super();
+
+		// ---------------------------------------------------
+		// Non-attribute Properties
+
 		this._collections = [];
+
+		// ---------------------------------------------------
+		// Record Options
 
 		this._options = _.extend( {
 			'toJSONRefs': false,
 			'omitAttributes': []
 		}, options );
 
+		// ---------------------------------------------------
+		// Record Attributes
+
 		this._attributes = _.defaults( attributes, {
 			id: _.uniqueId(),
 			url: null
 		} );
+
+		// ---------------------------------------------------
+		// Bind functions
+
+		this.addToCollection = this.addToCollection.bind( this );
+		this.destroy = this.destroy.bind( this );
+		this.fetch = this.fetch.bind( this );
+		this.forwardEvent = this.forwardEvent.bind( this );
+		this.makeAttribute = this.makeAttribute.bind( this );
+		this.removeFromCollection = this.removeFromCollection.bind( this );
+
+		// ---------------------------------------------------
+		// Make Attribute getters & setters
+
 		this._attributes.forEach( this.makeAttribute );
 	}
 
@@ -26,7 +50,20 @@ class Model extends EventEmitter {
 	// ---------------------------------------------------
 
 	fetch() {
-		return $.get();
+		// load stuff in here
+		// resolve the deferred when load is complete
+
+		if ( this.url ) {
+			// get the data at the url
+			$.get( this.url )
+				.then( ( data ) => _.each( data, this.makeAttribute ) );
+		} else {
+			// we're all set!
+			var deferred = $.Deferred();
+			deferred.resolve();
+			return deferred;
+		}
+
 	}
 
 	// ---------------------------------------------------
@@ -123,6 +160,7 @@ class Model extends EventEmitter {
 			},
 			get: () => this._attributes[ name ]
 		} );
+		this._attributes[ name ] = value;
 	}
 
 	// ---------------------------------------------------

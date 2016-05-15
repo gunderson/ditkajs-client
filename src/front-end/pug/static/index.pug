@@ -1,7 +1,24 @@
-html(class="#{lang}")
+html(class=lang)
     head
         include _head
+        style
+            | html {
+            | 	background-color: #000;
+            | }
+            | body {
+            //- | 	display: none;
+            | 	background-color: #000;
+            | }
     body
-        include _control-panel
+        a#saver
+        #main
+            include ui/_site-loader
+            include ui/_main-menu
+            include ui/_header
+            include ui/_footer
+            #pages
+                include pages/_control-panel-page
+                include pages/_master-page
+                .cover
 
-    script(src="index.js")
+        script(src="index.js")

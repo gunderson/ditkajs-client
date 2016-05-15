@@ -5,8 +5,8 @@ var $ = require( 'jquery' );
 
 
 // var localIp = '192.168.6.249';
-var localIp = GLOBALS.DOMAINS.api.address;
-var localPort = GLOBALS.DOMAINS.api.serverPort;
+var localIp = GLOBALS.ENV.DOMAINS.api.address;
+var localPort = GLOBALS.ENV.DOMAINS.api.serverPort;
 
 // var socket = io( 'http://localhost' );
 // socket.on( 'connect', function() {} );

@@ -5,4 +5,5 @@ window.TEMPLATES = require( './lib/templates' );
 window.APP = {};
 
 // var controlPanelView =
-require( './modules/control-panel/view' );
+require( './modules/control-panel-page/View' );
+require( './modules/master-page/View' );

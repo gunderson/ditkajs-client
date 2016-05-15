@@ -12,6 +12,8 @@ class View extends EventEmitter {
 			id: '',
 			tagname: '',
 			classname: '',
+			hasRendered: false,
+			loadPromise: null,
 			views: [
 				/*
                     new ChildView0({
@@ -53,6 +55,7 @@ class View extends EventEmitter {
 		// render child views
 		this.delegateEvents();
 		this.trigger( 'afterRender', this );
+		this.hasRendered = true;
 	}
 
 	delegateEvents() {

@@ -1,49 +1,108 @@
 
-<html class="#{lang}">
+<html class="en">
   <head>
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content=""/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="shortcut icon" sizes="16x16" href="favicon.png"/>
+    <link rel="shortcut icon" sizes="120x120" href=""/>
+    <link rel="shortcut icon" sizes="200x200" href=""/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <link rel="apple-touch-icon" href=""/>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+    <meta name="copyright" content=""/>
+    <meta property="og:url"/>
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:type" content="image/png"/>
+    <meta property="og:description" content=""/>
+    <meta property="twitter:title" content=""/>
+    <meta property="twitter:image" content=""/>
+    <meta property="twitter:description" content=""/>
     <link rel="stylesheet" type="text/css" href="index.css"/>
-    <script type="text/javascript">var GLOBALS = {"ENV":{"DOMAINS":{"front-end":{"serverPort":3000,"address":"10.0.1.8","lrPort":35729},"api":{"serverPort":3001,"address":"10.0.1.8","lrPort":35728,"jspackage":"copy"}},"name":"dev"},"COPY":{"control-panel":{"mainTitle":"IoT Control Panel","Play":"Play","Stop":"Stop"}}};
+    <script type="text/javascript">var GLOBALS = {"ENV":{"DOMAINS":{"front-end":{"serverPort":3000,"address":"10.0.1.14","lrPort":35729},"api":{"serverPort":3001,"address":"10.0.1.14","lrPort":35728,"jspackage":"copy"}},"name":"dev"},"COPY":{"control-panel":{"mainTitle":"IoT Control Panel","Play":"Play","Stop":"Stop"}}};
       var lang = "en";
     </script>
+    <style>
+      html {
+      	background-color: #000;
+      }
+      body {
+      	background-color: #000;
+      }
+    </style>
   </head>
-  <body>
-    <section id="control-panel">
-      <h1>IoT Control Panel</h1>
-      <div class="form">
-        <label>2
-          <input type="checkbox" value="2"/>
-        </label>
-        <label>3
-          <input type="checkbox" value="3"/>
-        </label>
-        <label>4
-          <input type="checkbox" value="4"/>
-        </label>
-        <label>5
-          <input type="checkbox" value="5"/>
-        </label>
-        <label>6
-          <input type="checkbox" value="6"/>
-        </label>
-        <label>7
-          <input type="checkbox" value="7"/>
-        </label>
-        <label>8
-          <input type="checkbox" value="8"/>
-        </label>
-        <label>9
-          <input type="checkbox" value="9"/>
-        </label>
-        <label>10
-          <input type="checkbox" value="10"/>
-        </label>
-        <label>11
-          <input type="checkbox" value="11"/>
-        </label>
-        <button class="play">Play</button>
-        <button class="stop">Stop</button>
+  <body><a id="saver"></a>
+    <div id="main">
+      <div id="site-loader"></div>
+      <div id="main-menu">
+        <div class="handle">
+          <div class="contents fa fa-bars"></div>
+        </div><a class="closer" href="#/">Master View</a><a class="closer" href="#/sculpture">Viz Overview</a><a class="closer" href="#/status">Status</a>
       </div>
-    </section>
+      <header>
+        <h1>Citi - Taste of the Nation Installation</h1>
+      </header>
+      <footer>
+        <div class="left"><a class="closer" href="#/">Master Controller</a><a class="closer" href="#/sculpture">Viz Overview</a><a class="closer" href="#/status">Status Viewer</a></div>
+        <div class="center"></div>
+        <div class="right"></div>
+      </footer>
+      <div id="pages">
+        <section class="page" id="control-panel-page">
+          <div class="background"></div>
+          <div class="content"></div>
+          <h1>IoT Control Panel
+            <div class="form">
+              <label>2
+                <input type="checkbox" value="2"/>
+              </label>
+              <label>3
+                <input type="checkbox" value="3"/>
+              </label>
+              <label>4
+                <input type="checkbox" value="4"/>
+              </label>
+              <label>5
+                <input type="checkbox" value="5"/>
+              </label>
+              <label>6
+                <input type="checkbox" value="6"/>
+              </label>
+              <label>7
+                <input type="checkbox" value="7"/>
+              </label>
+              <label>8
+                <input type="checkbox" value="8"/>
+              </label>
+              <label>9
+                <input type="checkbox" value="9"/>
+              </label>
+              <label>10
+                <input type="checkbox" value="10"/>
+              </label>
+              <label>11
+                <input type="checkbox" value="11"/>
+              </label>
+              <button class="play">Play</button>
+              <button class="stop">Stop</button>
+            </div>
+          </h1>
+        </section>
+        <section class="page" id="master-page">
+          <div class="background"></div>
+          <div class="content">
+            <h1>Master Projection Map</h1>
+          </div>
+        </section>
+        <div class="cover"></div>
+      </div>
+    </div>
+    <script src="index.js"></script>
   </body>
-  <script src="index.js"></script>
 </html>

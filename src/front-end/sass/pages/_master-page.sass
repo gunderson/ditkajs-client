@@ -1,0 +1,41 @@
+#master-page
+	.background
+		// background-image: url(http://placekitten.com/g/1280/720)
+	.content
+		#projectors
+			clear: both
+			background-color: #222
+			margin-left: -$page-margin
+			width: 100vw
+			padding: $page-margin
+		.projector
+			display: inline-block
+			margin: 2px
+		.viz
+			margin: 2*$page-margin 0
+			svg
+				background: #222
+		a
+			margin: 2px
+			padding: $page-margin
+			font-size: 14rem
+			text-decoration: none
+			width: 125rem
+			background-color: rgba(0,0,0,0.15)
+			display: inline-block
+			color: #888
+			text-align: center
+			&:first-child
+				margin-left: 0
+			&:hover
+				background-color: rgba(48,48,48,0.35)
+				color: #ccc
+		label
+			display: block
+			margin: 0 0 $page-margin 0
+			h3
+				font-size: 14rem
+				margin: 5rem 0
+		.control-group
+			margin: $page-margin 40px 0 0
+			float: left

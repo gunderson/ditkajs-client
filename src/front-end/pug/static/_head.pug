@@ -1,4 +1,29 @@
+title #{META.title}
+meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+meta(name='viewport', content=META.viewport)
+link(rel='icon', type='image/png', href=META.favicon)
+link(rel='shortcut icon', sizes='16x16', href='favicon.png')
+link(rel='shortcut icon', sizes='120x120', href=META.icons.shortcutIcon120x120)
+link(rel='shortcut icon', sizes='200x200', href=META.icons.shortcutIcon200x200)
+meta(name='apple-mobile-web-app-capable', content='yes')
+meta(name='mobile-web-app-capable', content='yes')
+meta(name='apple-mobile-web-app-status-bar-style', content='default')
+link(rel='apple-touch-icon', href=META.icons.appleTouchIcon)
+meta(name='description', content=META.description)
+meta(name='keywords', content=META.keywords)
+meta(name='author', content=META.author)
+meta(name='copyright', content=META.copyright)
+meta(property='og:url', content=META.og.url)
+meta(property='og:title', content=META.og.title)
+meta(property='og:image', content=META.og.image)
+meta(property='og:image:type', content='image/png')
+meta(property='og:description', content=META.og.description)
+meta(property='twitter:title', content=META.twitter.title)
+meta(property='twitter:image', content=META.twitter.image)
+meta(property='twitter:description', content=META.twitter.description)
+
 link(rel="stylesheet", type="text/css", href="index.css")
+
 script(type='text/javascript').
     var GLOBALS = !{(JSON.stringify(GLOBALS))};
     var lang = "#{lang}";
