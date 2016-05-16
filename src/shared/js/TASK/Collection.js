@@ -77,7 +77,7 @@ class Collection extends TASK {
 				}
 			} else {
 				// create a unique id
-				attributes.id = _.unique();
+				attributes.id = _.uniqueId();
 			}
 			// create new model
 			var m = new this._options.Model( attributes );

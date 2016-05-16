@@ -1,5 +1,13 @@
 'use strict';
 var TASK = require( '../../shared/js/TASK/TASK' );
+var TaskCollection = require( '../../shared/js/TASK/Collection' );
+
+var col = new TaskCollection( [ {}, {}, {}, {}, {} ] );
+
+
+console.log( 'TaskCollection :: ', col );
+console.log( 'TaskCollection :: ', col.length );
+
 
 var AppModel = require( './modules/app/Model' );
 var APP = new AppModel( {} );

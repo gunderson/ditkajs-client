@@ -45,10 +45,10 @@ FrontEnd.start( GLOBALS );
 
 // ------------------------------------------------------
 // back-end server
-
-var BackEnd = require( './api/js/main' );
-BackEnd.start( GLOBALS );
-
+if ( env !== 'dev' ) {
+	var BackEnd = require( './api/js/main' );
+	BackEnd.start( GLOBALS );
+}
 
 // ------------------------------------------------------
 // Webhook server

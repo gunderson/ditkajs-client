@@ -10,19 +10,24 @@ class AppPage extends TaskPage {
 		// ---------------------------------------------------
 		// Local Properties
 
+		var uiViews = [
+			new MainMenuView()
+		];
+
+		var pageViews = [
+			new MasterPageView( {
+				col: 0,
+				row: 0
+			} ),
+			new ControlPanelPageView( {
+				col: 1,
+				row: 0
+			} )
+		];
+
 		super( _.extend( {
 			name: 'app-page',
-			views: [
-				new MainMenuView(),
-				new MasterPageView( {
-					col: 0,
-					row: 0
-				} ),
-				new ControlPanelPageView( {
-					col: 1,
-					row: 0
-				} )
-			]
+			views: uiViews.concat( pageViews )
 		}, options ) );
 
 		// ---------------------------------------------------

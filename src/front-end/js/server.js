@@ -1,6 +1,6 @@
 'use strict';
 // var _ = require( 'lodash' );
-var TASK = require( '../../shared/js/abstract/TASK' );
+var TASK = require( '../../shared/js/TASK/TASK' );
 var bodyParser = require( 'body-parser' );
 var express = require( 'express' );
 // var favicon = require( 'serve-favicon' );

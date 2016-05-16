@@ -43,6 +43,7 @@ class View extends TASK {
 		// create base Element
 		this.$el = this.el ? $( this.el )
 			.first() : $( `<${this.tagname} class='${this.classname}' id='${this.id}' />` );
+		this.el = this.$el[ 0 ];
 		this.$ = this.$el.find.bind( this.$el );
 	}
 
@@ -55,6 +56,7 @@ class View extends TASK {
 		var name = options.name;
 		if ( name ) {
 			options.el = '#' + name;
+			options.route = name.slice( 0, -5 );
 		}
 		return options;
 	}

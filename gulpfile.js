@@ -6,6 +6,7 @@ var gulp = require( 'gulp' ),
 	browserify = require( 'browserify' ),
 	pug = require( 'gulp-pug' ),
 	tap = require( 'gulp-tap' ),
+	rm = require( 'gulp-rm' ),
 	domain = require( 'domain' ),
 	uglify = require( 'gulp-uglify' ),
 	jstConcat = require( 'gulp-jst-concat' ),
@@ -65,7 +66,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	gulp.task( `${domainName}-css`, function() {
+	gulp.task( `css:${domainName}`, function() {
 		return gulp
 			.src( `./src/${domainName}/sass/**/*.sass` )
 			.pipe( plumber( onError ) )
@@ -81,7 +82,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	gulp.task( `${domainName}-copy-js-src`, function() {
+	gulp.task( `copy-js-src:${domainName}`, function() {
 		return gulp.src( `./src/${domainName}/js/**/*` )
 			.pipe( plumber( onError ) )
 			.pipe( gulp.dest( `./dist/${domainName}/js/` ) )
@@ -91,8 +92,8 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	gulp.task( `${domainName}-compile-js`, [
-		`${domainName}-copy-js-src`
+	gulp.task( `compile-js:${domainName}`, [
+		`copy-js-src:${domainName}`
 	], function() {
 		return gulp
 			.src( `./src/${domainName}/js/index.js`, {
@@ -156,7 +157,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	gulp.task( `${domainName}-static-templates`, function() {
+	gulp.task( `static-templates:${domainName}`, function() {
 		var copyPath = './src/shared/js/data/copy/';
 		var langs = listFolders( copyPath );
 		var langData = {};
@@ -208,7 +209,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	gulp.task( `${domainName}-dynamic-templates`, function() {
+	gulp.task( `dynamic-templates:${domainName}`, function() {
 		var stream = gulp
 			.src( [ `./src/${domainName}/pug/dynamic/**/*.pug`, `!./src/${domainName}/pug/dynamic/**/_*.pug` ] )
 			.pipe( plumber( onError ) )
@@ -232,7 +233,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 	// --------------------------------------------------
 
 	// TODO: process assets
-	gulp.task( `${domainName}-copy-assets`, function() {
+	gulp.task( `copy-assets:${domainName}`, function() {
 		return gulp
 			.src( `./src/${domainName}/assets/**/*` )
 			.pipe( plumber( onError ) )
@@ -243,27 +244,40 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	gulp.task( `${domainName}-watch`,
+	gulp.task( `watch:${domainName}`,
 		function() {
 			livereload.listen( domainSettings.lrPort );
-			gulp.watch( [ `./src/${domainName}/js/**/*.js` ], [ `${domainName}-compile-js` ] );
-			gulp.watch( [ `./src/${domainName}/pug/dynamic/**/*.pug` ], [ `${domainName}-dynamic-templates` ] );
-			gulp.watch( [ `./src/${domainName}/pug/static/**/*.pug` ], [ `${domainName}-static-templates` ] );
-			gulp.watch( [ `./src/${domainName}/sass/**/*.sass` ], [ `${domainName}-css` ] );
+			gulp.watch( [ `./src/${domainName}/js/**/*.js` ], [ `compile-js:${domainName}` ] );
+			gulp.watch( [ `./src/${domainName}/pug/dynamic/**/*.pug` ], [ `dynamic-templates:${domainName}` ] );
+			gulp.watch( [ `./src/${domainName}/pug/static/**/*.pug` ], [ `static-templates:${domainName}` ] );
+			gulp.watch( [ `./src/${domainName}/sass/**/*.sass` ], [ `css:${domainName}` ] );
 		} );
 
 	// --------------------------------------------------
 
 	gulp.task( domainName, [
-		`${domainName}-dynamic-templates`,
-		`${domainName}-compile-js`,
-		`${domainName}-static-templates`,
-		`${domainName}-css`
+		`dynamic-templates:${domainName}`,
+		`compile-js:${domainName}`,
+		`static-templates:${domainName}`,
+		`copy-assets:${domainName}`,
+		`css:${domainName}`
 	] );
 
 	// --------------------------------------------------
 
 }
+
+// --------------------------------------------------
+
+gulp.task( 'clean', function() {
+	return gulp
+		.src( [ './dist/', './dist/**/*', './dist/**/.*' ], {
+			read: false
+		} )
+		.pipe( plumber( onError ) )
+		.pipe( rm() )
+		.on( 'error', gutil.log );
+} );
 
 // --------------------------------------------------
 
@@ -286,13 +300,17 @@ gulp.task( 'copy-shared', function() {
 
 // --------------------------------------------------
 
-gulp.task( 'watch', _.map( pkg.domains, ( d, domainName ) => `${domainName}-watch` ), function() {
-	gulp.watch( [ './src/shared/js/**/*' ], _.map( pkg.domains, ( d, domainName ) => `${domainName}-compile-js` ) );
+gulp.task( 'watch', _.map( pkg.domains, ( d, domainName ) => `watch:${domainName}` ), function() {
+	return gulp.watch( [ './src/shared/js/**/*' ], _.map( pkg.domains, ( d, domainName ) => `compile-js:${domainName}` ) );
 } );
 
 // --------------------------------------------------
 
-gulp.task( 'default', [ 'copy-start', 'copy-shared' ].concat( _.map( pkg.domains, ( d, domainName ) => `${domainName}` ) ) );
+gulp.task( 'run-all', [ 'copy-start', 'copy-shared' ].concat( _.map( pkg.domains, ( d, domainName ) => `${domainName}` ) ) );
+
+gulp.task( 'default', [ 'clean' ], function() {
+	return gulp.run( 'run-all' );
+} );
 
 // --------------------------------------------------
 

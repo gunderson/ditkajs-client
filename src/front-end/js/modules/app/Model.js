@@ -11,9 +11,9 @@ class AppModel extends TaskModel {
 
 		_.extend( this, {
 			prevRoute: null,
-			// empty route for boot-up
+			// nonsensical route for boot-up
 			_route: {
-				parts: [ '' ]
+				parts: [ '!!!!!' ]
 			}
 		} );
 
@@ -35,11 +35,15 @@ class AppModel extends TaskModel {
 	// Routing
 
 	setupRouter() {
-		page( '*', this.onRoute );
+		page.base( '/#' );
+		page( '/', '/master' );
+		page( '/master', this.onRoute );
+		page( '/control-panel', this.onRoute );
 		page();
 	}
 
 	onRoute( ctx ) {
+		// console.log( ctx );
 		this.route = ctx;
 	}
 
@@ -52,14 +56,14 @@ class AppModel extends TaskModel {
 
 	set route( ctx ) {
 		// Get constituent parts for use in page-route handling
-		ctx.parts = ctx.hash
+		ctx.parts = ctx.path
 			.slice( 1 )
 			.split( '/' );
 		this.prevRoute = this._route;
 		this._route = ctx;
 		this._route.prevRoute = this.prevRoute;
 
-		console.log( 'ROUTE :: ', this._route );
+		// console.log( 'ROUTE :: ', this._route );
 		this.trigger( 'route', this._route );
 		return ctx;
 	}

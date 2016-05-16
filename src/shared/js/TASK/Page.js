@@ -109,7 +109,7 @@ class Page extends TaskView {
 		var currentPage = this.page;
 		var newPage = null;
 
-		console.log( this, route, prevRoute );
+		// console.log( this, route, prevRoute );
 
 		// only change pages if new base-route is different from the last
 		if ( route.parts.length > 0 && route.parts[ 0 ] !== prevRoute.parts[ 0 ] ) {
@@ -155,7 +155,7 @@ class Page extends TaskView {
 		} else if ( route.parts.length === 0 && currentPage ) {
 			// currentPage.transitionOut();
 
-		} else if ( route.parts.length > 0 ) {
+		} else if ( route.parts.length > 0 && currentPage ) {
 			// it's probably a sub-page
 			// tell the current page to display the new info
 			currentPage.onRoute( route );
@@ -173,6 +173,8 @@ class Page extends TaskView {
 			} );
 
 		this.$el.addClass( 'active' );
+		this.$el.find( '>.content' )
+			.scrollTop( 0 );
 
 		if ( !prev ) {
 			// console.log('No Previous Page');
@@ -219,6 +221,9 @@ class Page extends TaskView {
 			y: '0%',
 			ease: 'Power4.easeOut',
 			onComplete: () => {
+				this.$el.css( {
+					transform: ''
+				} );
 				this.trigger( 'transitionInComplete' );
 			},
 			overwrite: true
@@ -299,6 +304,14 @@ class Page extends TaskView {
 	transitionInComplete() {}
 
 	transitionOutComplete() {
+
+		this.$el.css( {
+			transform: ''
+		} );
+		this.$el.find( '>.content' )
+			.scrollTop( 0 );
+
+
 		this.$( '.cover' )
 			.off( 'mousewheel' );
 	}

@@ -1,14 +1,17 @@
 $menu-link-color: #ccc
 $menu-link-hover-color: #fff
 $menu-handle-size: 35rem
+$handle-margin: 10rem
 
 #main-menu
 	font-family: $header-font-family
 	color: #ccc
-	z-index: 2
-	@include transition(transform 0.5s ease-out)
+	z-index: 5
+	@include transition(transform 0.35s ease-out)
 	&.menu-open
 		transform: translate3d(-$menu-width,0,0)
+		.handle
+			transform: translate3d($menu-width, -$header-height,0)
 	position: absolute
 	top: 0
 	right: -$menu-width
@@ -33,13 +36,12 @@ $menu-handle-size: 35rem
 			background-color: #222
 			color: #ddd
 	.handle
-		@include transition(transform 0.5s ease-out)
-		.menu-open &
-			transform: translate3d($menu-width,0,0)
+		@include transition(transform 0.35s ease-out)
 		display: table
 		position: absolute
 		top: 0
-		left: -$menu-handle-size
+		top: $header-height + $handle-margin
+		left: -$menu-handle-size - $handle-margin
 		width: $menu-handle-size
 		height: $menu-handle-size
 		background-color: #000
