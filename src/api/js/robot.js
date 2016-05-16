@@ -1,10 +1,10 @@
 // 'use strict';
 var _ = require( 'lodash' );
-var EventEmitter = require( '../../shared/js/abstract/EventEmitter' );
+var TASK = require( '../../shared/js/TASK/TASK' );
 var Raspi = require( 'raspi-io' );
 var five = require( 'johnny-five' );
 
-class Robot extends EventEmitter {
+class Robot extends TASK {
 	constructor( GLOBALS ) {
 		super();
 

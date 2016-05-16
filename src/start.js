@@ -46,8 +46,8 @@ FrontEnd.start( GLOBALS );
 // ------------------------------------------------------
 // back-end server
 
-// var BackEnd = require( './api/js/main' );
-// BackEnd.start( GLOBALS );
+var BackEnd = require( './api/js/main' );
+BackEnd.start( GLOBALS );
 
 
 // ------------------------------------------------------

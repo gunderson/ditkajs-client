@@ -26,6 +26,7 @@
     <meta property="twitter:description" content=""/>
     <link rel="stylesheet" type="text/css" href="index.css"/>
     <script type="text/javascript">var GLOBALS = {"ENV":{"DOMAINS":{"front-end":{"serverPort":3000,"address":"10.0.1.14","lrPort":35729},"api":{"serverPort":3001,"address":"10.0.1.14","lrPort":35728,"jspackage":"copy"}},"name":"dev"},"COPY":{"control-panel":{"mainTitle":"IoT Control Panel","Play":"Play","Stop":"Stop"}}};
+      var env = "dev";
       var lang = "en";
     </script>
     <style>
@@ -38,12 +39,12 @@
     </style>
   </head>
   <body><a id="saver"></a>
-    <div id="main">
+    <div id="app-page">
       <div id="site-loader"></div>
       <div id="main-menu">
         <div class="handle">
           <div class="contents fa fa-bars"></div>
-        </div><a class="closer" href="#/">Master View</a><a class="closer" href="#/sculpture">Viz Overview</a><a class="closer" href="#/status">Status</a>
+        </div><a class="closer" href="#/master">Master Page</a><a class="closer" href="#/control-panel">Control Panel</a>
       </div>
       <header>
         <h1>Citi - Taste of the Nation Installation</h1>
@@ -56,43 +57,44 @@
       <div id="pages">
         <section class="page" id="control-panel-page">
           <div class="background"></div>
-          <div class="content"></div>
-          <h1>IoT Control Panel
-            <div class="form">
-              <label>2
-                <input type="checkbox" value="2"/>
-              </label>
-              <label>3
-                <input type="checkbox" value="3"/>
-              </label>
-              <label>4
-                <input type="checkbox" value="4"/>
-              </label>
-              <label>5
-                <input type="checkbox" value="5"/>
-              </label>
-              <label>6
-                <input type="checkbox" value="6"/>
-              </label>
-              <label>7
-                <input type="checkbox" value="7"/>
-              </label>
-              <label>8
-                <input type="checkbox" value="8"/>
-              </label>
-              <label>9
-                <input type="checkbox" value="9"/>
-              </label>
-              <label>10
-                <input type="checkbox" value="10"/>
-              </label>
-              <label>11
-                <input type="checkbox" value="11"/>
-              </label>
-              <button class="play">Play</button>
-              <button class="stop">Stop</button>
-            </div>
-          </h1>
+          <div class="content">
+            <h1>IoT Control Panel
+              <div class="form">
+                <label>2
+                  <input type="checkbox" value="2"/>
+                </label>
+                <label>3
+                  <input type="checkbox" value="3"/>
+                </label>
+                <label>4
+                  <input type="checkbox" value="4"/>
+                </label>
+                <label>5
+                  <input type="checkbox" value="5"/>
+                </label>
+                <label>6
+                  <input type="checkbox" value="6"/>
+                </label>
+                <label>7
+                  <input type="checkbox" value="7"/>
+                </label>
+                <label>8
+                  <input type="checkbox" value="8"/>
+                </label>
+                <label>9
+                  <input type="checkbox" value="9"/>
+                </label>
+                <label>10
+                  <input type="checkbox" value="10"/>
+                </label>
+                <label>11
+                  <input type="checkbox" value="11"/>
+                </label>
+                <button class="play">Play</button>
+                <button class="stop">Stop</button>
+              </div>
+            </h1>
+          </div>
         </section>
         <section class="page" id="master-page">
           <div class="background"></div>

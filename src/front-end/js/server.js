@@ -1,6 +1,6 @@
 'use strict';
 // var _ = require( 'lodash' );
-var EventEmitter = require( '../../shared/js/abstract/EventEmitter' );
+var TASK = require( '../../shared/js/abstract/TASK' );
 var bodyParser = require( 'body-parser' );
 var express = require( 'express' );
 // var favicon = require( 'serve-favicon' );
@@ -9,7 +9,7 @@ var methodOverride = require( 'method-override' );
 var path = require( 'path' );
 require( 'colors' );
 
-class Server extends EventEmitter {
+class Server extends TASK {
 	constructor( GLOBALS ) {
 		super();
 		var app = express();

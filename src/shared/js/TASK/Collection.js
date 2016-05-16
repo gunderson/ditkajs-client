@@ -1,13 +1,13 @@
 var _ = require( 'lodash' );
-var EventEmitter = require( './EventEmitter' );
-var AbstractModel = require( './AbstractModel' );
+var TASK = require( './TASK' );
+var TaskModel = require( './Model' );
 
-class Collection extends EventEmitter {
+class Collection extends TASK {
 
 	constructor( models, options ) {
 		super();
 		this._options = _.extend( {
-			Model: AbstractModel,
+			Model: TaskModel,
 			url: null
 		}, options );
 

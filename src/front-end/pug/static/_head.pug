@@ -26,4 +26,5 @@ link(rel="stylesheet", type="text/css", href="index.css")
 
 script(type='text/javascript').
     var GLOBALS = !{(JSON.stringify(GLOBALS))};
+    var env = "#{GLOBALS.ENV.name}";
     var lang = "#{lang}";

@@ -1,7 +1,16 @@
-var AbstractPage = require( '../../../../shared/js/abstract/Page' );
+var _ = require( 'lodash' );
+var TaskPage = require( '../../../../shared/js/TASK/Page' );
 
-class Page extends AbstractPage {
+class MasterPage extends TaskPage {
+	constructor( options ) {
 
+		// ---------------------------------------------------
+		// Local Properties
+
+		super( _.extend( {
+			name: 'master-page'
+		}, options ) );
+	}
 }
 
-module.exports = Page;
+module.exports = MasterPage;

@@ -1,10 +1,13 @@
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-var EventEmitter = require( './EventEmitter' );
+var TASK = require( './TASK' );
 
-class View extends EventEmitter {
+class View extends TASK {
 	constructor( options ) {
 		super();
+
+		View.parseName( options );
+
 		_.extend( this, {
 			el: null,
 			model: null,
@@ -26,33 +29,48 @@ class View extends EventEmitter {
                     }), ...
                 */
 			],
-			events: {
+			events: [
 				/*
+				{
                     eventName: 'click',
                     selector: 'button.play',
                     handler: this.handleButtonClick
-                */
-			}
+				}
+				*/
+			]
 		}, options );
+
 		// create base Element
 		this.$el = this.el ? $( this.el )
 			.first() : $( `<${this.tagname} class='${this.classname}' id='${this.id}' />` );
-		this.$ = this.$el.find;
+		this.$ = this.$el.find.bind( this.$el );
 	}
 
 	static getTemplate( name ) {
 		// TEMPLATES is a global object on window
-		return name ? TEMPLATES.JST[ name ] : () => '';
+		return name ? TEMPLATES[ name ] : () => '';
+	}
+
+	static parseName( options ) {
+		var name = options.name;
+		if ( name ) {
+			options.el = '#' + name;
+		}
+		return options;
 	}
 
 	render() {
 		this.trigger( 'beforeRender', this );
 		this.undelegateEvents();
+
 		// put rendered JST template into $el
-		var html = View.getTemplate( this.template )
-			.render( this.serialize() );
-		this.$el.html( html );
+		if ( this.template ) {
+			var html = View.getTemplate( this.template )( this.serialize() );
+			this.$el.html( html );
+		}
 		// render child views
+		_.each( this.views, ( v ) => v.render() );
+
 		this.delegateEvents();
 		this.trigger( 'afterRender', this );
 		this.hasRendered = true;
@@ -61,7 +79,7 @@ class View extends EventEmitter {
 	delegateEvents() {
 		_.each( this.events, ( e ) => {
 			this.$( e.selector )
-				.on( e.name, e.handler );
+				.on( e.eventName, this[ e.handler ] );
 		} );
 		return this;
 	}
@@ -69,13 +87,13 @@ class View extends EventEmitter {
 	undelegateEvents() {
 		_.each( this.events, ( e ) => {
 			this.$( e.selector )
-				.off( e.name, e.handler );
+				.off( e.eventName );
 		} );
 		return this;
 	}
 
 	serialize() {
-		var model = this.model ? this.model.attributes() : {};
+		var model = this.model ? this.model.attributes : {};
 		// GLOBALS is a global object on window
 		return _.extend( {}, model, GLOBALS );
 	}

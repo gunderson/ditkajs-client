@@ -1,12 +1,12 @@
 'use strict';
-var EventEmitter = require( '../../shared/js/abstract/EventEmitter' );
+var TASK = require( '../../shared/js/TASK/TASK' );
 var _ = require( 'lodash' );
 var express = require( 'express' );
 var HeaderUtils = require( './utils/HeaderUtils' );
 var logger = require( 'morgan' );
 require( 'colors' );
 
-class Server extends EventEmitter {
+class Server extends TASK {
 	constructor( GLOBALS ) {
 		super();
 		var app = express();

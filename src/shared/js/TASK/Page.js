@@ -1,39 +1,41 @@
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-var AbstractView = require( './View' );
+var TaskView = require( './View' );
 var TweenMax = require( 'TweenMax' );
 
-var PAGE_TRANSITION_DURATION = 500;
+var PAGE_TRANSITION_DURATION = 1.5;
 
-class Page extends AbstractView {
+class Page extends TaskView {
 	constructor( options ) {
-		super( options );
 
 		// ---------------------------------------------------
 		// Local Properties
 
-		_.extend( this, {
+		super( _.extend( {
 			col: 0,
 			row: 0,
-			currentRoute: '',
 			page: null,
-			loadType: 'section',
-			layerAnimationOffset: -0.25
-		}, options );
+			name: '',
+			loadType: 'page',
+			layerAnimationOffset: 0.25
+		}, options ) );
+
 
 		// ---------------------------------------------------
 		// Bind Functions
 
-		this.fetch = this.fetch.bind( this );
-		this.loadAssets = this.loadAssets.bind( this );
-		this.onRoute = this.onRoute.bind( this );
-		this.transitionIn = this.transitionIn.bind( this );
-		this.transitionOut = this.transitionOut.bind( this );
-		this.transitionInComplete = this.transitionInComplete.bind( this );
-		this.transitionOutComplete = this.transitionOutComplete.bind( this );
+		TaskView.bindFunctions( this, [
+			'fetch',
+			'loadAssets',
+			'onRoute',
+			'transitionIn',
+			'transitionOut',
+			'transitionInComplete',
+			'transitionOutComplete'
+		] );
 
 		// ---------------------------------------------------
-		// Set Listeners
+		// Event Handlers
 
 		this.on( 'transitionInComplete', this.transitionInComplete );
 		this.on( 'transitionOutComplete', this.transitionOutComplete );
@@ -91,8 +93,8 @@ class Page extends AbstractView {
 			} );
 			this.trigger( 'fetchComplete', this );
 			this.trigger( 'loadComplete', {
-				type: 'section',
-				id: this.route
+				type: 'page',
+				id: this.name
 			} );
 
 		}
@@ -101,57 +103,63 @@ class Page extends AbstractView {
 
 	}
 
-	onRoute( route, params ) {
+	onRoute( route ) {
+		var prevRoute = route.prevRoute;
+
 		var currentPage = this.page;
 		var newPage = null;
 
-		// console.log(this, route, this.currentRoute);
+		console.log( this, route, prevRoute );
 
-		// only do this if new route is different from the last
-		if ( route !== null && route !== this.currentRoute ) {
+		// only change pages if new base-route is different from the last
+		if ( route.parts.length > 0 && route.parts[ 0 ] !== prevRoute.parts[ 0 ] ) {
 
 			// remove the old page
 			$( 'html' )
-				.removeClass( this.currentRoute + '-page' );
+				.removeClass( prevRoute.parts[ 0 ] + '-page' );
 
 			if ( route ) {
 				$( 'html' )
-					.addClass( route + '-page' );
+					.addClass( route.parts[ 0 ] + '-page' );
 
 				// determine new page
-				newPage = this.views[ '#' + route ];
+				newPage = _.find( this.views, {
+					name: route.parts[ 0 ] + '-page'
+				} );
 			}
 
-			// if the route is invalid, do nothing
+			// if the route doesn't match any pages, do nothing
 			if ( !newPage ) return;
 
-			var _this = this;
-			newPage.fetch( params )
-				.done( function() {
-					_this.trigger( 'loadEnd' );
+			newPage.fetch( route )
+				.done( () => {
+					this.trigger( 'loadEnd' );
 
 					if ( currentPage ) {
 						currentPage.transitionOut( newPage );
 					}
-					newPage.transitionIn( currentPage, params );
-					if ( params && params.length > 0 ) {
-						newPage.onRoute( params[ 0 ], params.slice( 1 ) );
-					}
 
+					var subRoute = _.cloneDeep( route );
+					subRoute.parts.slice( 1 );
+					subRoute.prevRoute.parts.slice( 1 );
+
+					newPage.transitionIn( currentPage, subRoute );
+
+					if ( subRoute.parts.length > 0 ) {
+						// this means it's a sub-route, recurse child pages
+						newPage.onRoute( subRoute );
+					}
 				} );
 
 			this.page = newPage;
-		} else if ( route === null && currentPage ) {
+		} else if ( route.parts.length === 0 && currentPage ) {
 			// currentPage.transitionOut();
 
-		} else if ( route !== null ) {
+		} else if ( route.parts.length > 0 ) {
 			// it's probably a sub-page
 			// tell the current page to display the new info
-			// console.log('onRoute: currentRoute is the same as new route\n', route, params);
-			currentPage.onRoute( params[ 0 ], params.slice( 1 ) );
-
+			currentPage.onRoute( route );
 		}
-		this.currentRoute = route;
 	}
 
 	clearSubPage() {
@@ -163,9 +171,6 @@ class Page extends AbstractView {
 			.on( 'mousewheel', function( e ) {
 				e.preventDefault();
 			} );
-		TweenMax.to( [ '#scene-menu', 'header #main-logo' ], 1, {
-			autoAlpha: 1
-		} );
 
 		this.$el.addClass( 'active' );
 
@@ -179,6 +184,7 @@ class Page extends AbstractView {
 			return this;
 		}
 
+		// hide the cover
 		TweenMax.fromTo( this.$( '.cover' ), PAGE_TRANSITION_DURATION, {
 			autoAlpha: 1
 		}, {
@@ -193,16 +199,17 @@ class Page extends AbstractView {
 
 		if ( this.col < prev.col ) {
 			startX = '-100';
-			this.app.media.playSound( 'page-forward' );
+			// this.app.media.playSound( 'page-forward' );
 		} else if ( this.col > prev.col ) {
 			startX = '100';
-			this.app.media.playSound( 'page-back' );
+			// this.app.media.playSound( 'page-back' );
 		} else if ( this.row < prev.row ) {
 			startY = '100';
 		} else if ( this.row > prev.row ) {
 			startY = '-100';
 		}
 
+		// animate page layer
 		TweenMax.fromTo( this.$el, PAGE_TRANSITION_DURATION, {
 			display: 'block',
 			x: startX + '%',
@@ -217,7 +224,7 @@ class Page extends AbstractView {
 			overwrite: true
 		} );
 
-
+		// animate content layer
 		TweenMax.fromTo( this.$el.find( '> .content' ), PAGE_TRANSITION_DURATION, {
 			x: ( startX * this.layerAnimationOffset ) + '%',
 			y: ( startY * this.layerAnimationOffset ) + '%'
@@ -258,6 +265,7 @@ class Page extends AbstractView {
 			endY = '-100';
 		}
 
+		// animate page layer
 		TweenMax.fromTo( this.$el, PAGE_TRANSITION_DURATION, {
 			// display: 'block',
 			x: '0%',
@@ -273,7 +281,7 @@ class Page extends AbstractView {
 			overwrite: true
 		} );
 
-
+		// animate content layer
 		TweenMax.fromTo( this.$el.find( '> .content' ), PAGE_TRANSITION_DURATION, {
 			// display: 'block',
 			x: '0%',

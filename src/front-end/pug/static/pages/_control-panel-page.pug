@@ -1,11 +1,11 @@
 section#control-panel-page.page
     .background
     .content
-    h1 #{GLOBALS.COPY["control-panel"].mainTitle}
-        .form
-            - var i = 1
-            while (++i < 12)
-                label #{i}
-                    input(type="checkbox", value=(i))
-            button.play #{GLOBALS.COPY["control-panel"].Play}
-            button.stop #{GLOBALS.COPY["control-panel"].Stop}
+        h1 #{GLOBALS.COPY["control-panel"].mainTitle}
+            .form
+                - var i = 1
+                while (++i < 12)
+                    label #{i}
+                        input(type="checkbox", value=(i))
+                button.play #{GLOBALS.COPY["control-panel"].Play}
+                button.stop #{GLOBALS.COPY["control-panel"].Stop}

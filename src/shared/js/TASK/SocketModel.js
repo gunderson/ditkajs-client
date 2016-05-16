@@ -1,9 +1,9 @@
 // var _ = require( 'lodash' );
 // var $ = require( 'jquery' );
-var AbstractModel = require( './Model' );
+var TaskModel = require( './Model' );
 var io = require( 'socket-io/client' );
 
-class SocketModel extends AbstractModel {
+class SocketModel extends TaskModel {
 	constructor( attributes, options ) {
 		super( attributes, options );
 		this.socket = io.socket();

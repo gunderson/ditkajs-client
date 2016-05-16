@@ -29,8 +29,8 @@
 	position: absolute
 	top: 0
 	left: 0
-	z-index: 0
-	background-color: #333
+	//z-index: 0
+	// background-color: #333
 	padding: $header-height 0
 	-webkit-overflow-scrolling: touch
 
@@ -45,6 +45,7 @@
 		background-size: cover
 		background-position: 50% 50%
 		top: 0
+		left: 0
 		background-color: #333
 	.content
 		min-height: 100%
@@ -54,3 +55,5 @@
 		position: relative
 		padding: $page-margin
 		z-index: 1
+		.active &
+			z-index: 3

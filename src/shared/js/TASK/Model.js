@@ -1,8 +1,8 @@
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-var EventEmitter = require( './EventEmitter' );
+var TASK = require( './TASK' );
 
-class Model extends EventEmitter {
+class Model extends TASK {
 	constructor( attributes, options ) {
 		super();
 
@@ -30,22 +30,30 @@ class Model extends EventEmitter {
 		// ---------------------------------------------------
 		// Bind functions
 
-		this.addToCollection = this.addToCollection.bind( this );
-		this.destroy = this.destroy.bind( this );
-		this.fetch = this.fetch.bind( this );
-		this.forwardEvent = this.forwardEvent.bind( this );
-		this.makeAttribute = this.makeAttribute.bind( this );
-		this.removeFromCollection = this.removeFromCollection.bind( this );
+		TASK.bindFunctions( this, [
+			'addToCollection',
+			'destroy',
+			'fetch',
+			'forwardEvent',
+			'makeAttribute',
+			'removeFromCollection'
+		] );
+
 
 		// ---------------------------------------------------
 		// Make Attribute getters & setters
 
-		this._attributes.forEach( this.makeAttribute );
+		_.each( this._attributes, this.makeAttribute );
+
+		// ---------------------------------------------------
+		// Event Handling
+
 	}
 
 	[ Symbol.iterator ]() {
 		return this._attributes.values();
 	}
+
 
 	// ---------------------------------------------------
 

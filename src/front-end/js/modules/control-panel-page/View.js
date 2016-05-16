@@ -1,33 +1,81 @@
 'use strict';
+var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-// var _ = require( 'lodash' );
 // var io = require( 'socket.io-client' );
+var TaskPage = require( '../../../../shared/js/TASK/Page' );
 
+class Page extends TaskPage {
+	constructor( options ) {
 
-// var localIp = '192.168.6.249';
-var localIp = GLOBALS.ENV.DOMAINS.api.address;
-var localPort = GLOBALS.ENV.DOMAINS.api.serverPort;
+		// ---------------------------------------------------
+		// Local Properties
 
-// var socket = io( 'http://localhost' );
-// socket.on( 'connect', function() {} );
-// socket.on('event', function(data) {});
-// socket.on('disconnect', function() {});
+		super( _.extend( {
+			name: 'control-panel-page',
+			events: [ {
+				eventName: 'click',
+				selector: 'button.play',
+				handler: 'onClickPlay'
+			}, {
+				eventName: 'click',
+				selector: 'button.stop',
+				handler: 'onClickStop'
+			}, {
+				eventName: 'change',
+				selector: 'input:checkbox',
+				handler: 'onChangeCheckbox'
+			} ]
+		}, options ) );
 
-$( 'button.play' )
-	.click( () => $.get( `http://${localIp}:${localPort}/play` ) );
-$( 'button.stop' )
-	.click( () => $.get( `http://${localIp}:${localPort}/stop` ) );
+		_.extend( this, {
+			serverAddress: this.GLOBALS.ENV.DOMAINS.api.address,
+			serverPort: this.GLOBALS.ENV.DOMAINS.api.serverPort
+		} );
 
-$( 'input:checkbox' )
-	.on( 'change', ( evt ) => {
-		let target = evt.target;
+		// ---------------------------------------------------
+		// Bind Functions
+
+		TaskPage.bindFunctions( this, [
+			'setupSocket',
+			'onClickPlay',
+			'onClickStop',
+			'onChangeCheckbox'
+		] );
+
+		// ---------------------------------------------------
+		// Event Handlers
+
+		this.setupSocket();
+
+	}
+
+	setupSocket() {
+		// this.socket = io( `http://${this.localAddress}` );
+		// this.socket.on( 'connect', function() {} );
+		// this.socket.on( 'event', function( data ) {} );
+		// this.socket.on( 'disconnect', function() {} );
+	}
+
+	onClickPlay() {
+		return $.get( `http://${this.localAddress}:${this.localPort}/play` );
+	}
+
+	onClickStop() {
+		return $.get( `http://${this.localAddress}:${this.localPort}/stop` );
+	}
+
+	onChangeCheckbox( evt ) {
+		var target = evt.target;
 		if ( target.checked ) {
-			$( 'input:checkbox' )
+			this.$( 'input:checkbox' )
 				.each( ( i, el ) => {
 					target.value === i ? el.checked = true : el.checked = false;
 				} );
-			$.get( `http://${localIp}:${localPort}/led/${target.value}/on` );
+			$.get( `http://${this.localAddress}:${this.localPort}/led/${target.value}/on` );
 		} else {
-			$.get( `http://${localIp}:${localPort}/led/${target.value}/off` );
+			$.get( `http://${this.localAddress}:${this.localPort}/led/${target.value}/off` );
 		}
-	} );
+	}
+}
+
+module.exports = Page;
