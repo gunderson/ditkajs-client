@@ -30,6 +30,8 @@ class AppPage extends TaskPage {
 			views: uiViews.concat( pageViews )
 		}, options ) );
 
+		this.pageViews = pageViews;
+
 		// ---------------------------------------------------
 		// Event Handling
 

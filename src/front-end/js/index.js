@@ -1,13 +1,6 @@
 'use strict';
+var _ = require( 'lodash' );
 var TASK = require( '../../shared/js/TASK/TASK' );
-var TaskCollection = require( '../../shared/js/TASK/Collection' );
-
-var col = new TaskCollection( [ {}, {}, {}, {}, {} ] );
-
-
-console.log( 'TaskCollection :: ', col );
-console.log( 'TaskCollection :: ', col.length );
-
 
 var AppModel = require( './modules/app/Model' );
 var APP = new AppModel( {} );
@@ -25,5 +18,7 @@ var appPage = new AppPage( {
 	model: APP
 } );
 
-appPage.once( 'afterRender', APP.setupRouter );
+var routes = _.map( appPage.pageViews, ( v ) => v.name.slice( 0, -5 ) );
+
+appPage.once( 'afterRender', () => APP.setupRouter( routes ) );
 appPage.render();

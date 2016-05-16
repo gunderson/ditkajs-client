@@ -34,11 +34,13 @@ class AppModel extends TaskModel {
 	// ---------------------------------------------------------
 	// Routing
 
-	setupRouter() {
+	setupRouter( routes ) {
 		page.base( '/#' );
-		page( '/', '/master' );
-		page( '/master', this.onRoute );
-		page( '/control-panel', this.onRoute );
+		page( '/', `/${routes[0]}` );
+		_.each( routes, ( route ) => {
+			page( `/${route}`, this.onRoute );
+		} );
+		page( '*', `/${routes[0]}` );
 		page();
 	}
 
