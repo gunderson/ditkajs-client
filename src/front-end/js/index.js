@@ -1,19 +1,22 @@
 'use strict';
+var jQuery = require( 'jquery' );
+require( 'jquery.browser' );
 var _ = require( 'lodash' );
 var TASK = require( '../../shared/js/TASK/TASK' );
 
-var AppModel = require( './modules/app/Model' );
-var APP = new AppModel( {} );
 
 // Distribute Global Vars
 TASK.prototype.TEMPLATES = require( './lib/templates' );
-TASK.prototype.APP = APP;
 TASK.prototype.GLOBALS = window.GLOBALS;
 
 // Get Views
-var AppPage = require( './modules/app/View' );
+var AppPage = require( './views/App-view' );
 
 // Start App
+var AppController = require( './controllers/App-controller' );
+var APP = new AppController( {} );
+TASK.prototype.APP = APP;
+
 var appPage = new AppPage( {
 	model: APP
 } );

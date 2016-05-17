@@ -1,10 +1,11 @@
 'use strict';
 var TASK = require( '../../shared/js/TASK/TASK' );
+var log = require( '../../shared/js/TASK/utils/log' );
 var _ = require( 'lodash' );
 var express = require( 'express' );
 var HeaderUtils = require( './utils/HeaderUtils' );
 var logger = require( 'morgan' );
-require( 'colors' );
+var chalk = require( 'chalk' );
 
 class Server extends TASK {
 	constructor( GLOBALS ) {
@@ -14,7 +15,7 @@ class Server extends TASK {
 		var router = express.Router();
 		router.use( logger( 'dev' ) );
 
-		app.route( '/' )
+		router.route( '/' )
 			.get( ( req, res, next ) => {
 				HeaderUtils.addJSONHeader( res );
 				HeaderUtils.addCORSHeader( res );
@@ -22,7 +23,7 @@ class Server extends TASK {
 				next();
 			} );
 
-		app.route( '/led/:id/:state' )
+		router.route( '/led/:id/:state' )
 			.get( ( req, res, next ) => {
 				HeaderUtils.addJSONHeader( res );
 				HeaderUtils.addCORSHeader( res );
@@ -30,7 +31,7 @@ class Server extends TASK {
 				this.trigger( 'led', req.params );
 			} );
 
-		app.route( '/play' )
+		router.route( '/play' )
 			.get( ( req, res, next ) => {
 				HeaderUtils.addJSONHeader( res );
 				HeaderUtils.addCORSHeader( res );
@@ -40,7 +41,7 @@ class Server extends TASK {
 				this.trigger( 'play', req.params.id );
 			} );
 
-		app.route( '/stop' )
+		router.route( '/stop' )
 			.get( ( req, res, next ) => {
 				HeaderUtils.addJSONHeader( res );
 				HeaderUtils.addCORSHeader( res );
@@ -50,8 +51,10 @@ class Server extends TASK {
 				this.trigger( 'stop', req.params.id );
 			} );
 
-		app.listen( GLOBALS.ENV.DOMAINS.api.serverPort, function() {
-			console.log( 'API server listening on port', `${GLOBALS.ENV.DOMAINS.api.serverPort}`.green );
+		app.use( '/', router );
+		log( chalk.green( 'Device server:' ), 'Starting', __dirname );
+		app.listen( GLOBALS.ENV.DOMAINS.device.port, function() {
+			log( chalk.green( 'Device server' ), 'listening on port:', chalk.green( `${GLOBALS.ENV.DOMAINS.device.port}` ) );
 		} );
 	}
 }

@@ -202,9 +202,13 @@ class Collection extends TASK {
 
 	// ---------------------------------------------------
 
-	getIDs() {
+	getRefs() {
 		return _.map( this._models, ( m ) => m.id );
 	}
+
+	// ---------------------------------------------------
+
+	// TODO: create wrapped convenience accessor functions from lodash
 
 	// ---------------------------------------------------
 

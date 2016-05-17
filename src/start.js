@@ -1,5 +1,9 @@
+var _ = require( 'lodash' );
 var pkg = require( '../package.json' );
-require( 'colors' );
+var chalk = require( 'chalk' );
+var log = require( './shared/js/TASK/utils/log' );
+var cp = require( 'child_process' );
+var path = require( 'path' );
 
 // ----------------------------------------------------------------
 // CLI
@@ -15,43 +19,49 @@ var argv = require( 'yargs' )
 	// help text
 	.alias( 'h', 'help' )
 	.help( 'help' )
-	.usage( 'Usage: $0 -env [dev|stage|prod]' )
+	.usage( 'Usage: $0 [options]' )
 	.showHelpOnFail( false, 'Specify --help for available options' )
 	// environment
 	.option( 'env', {
 		alias: 'environment',
-		describe: 'define the deployment target [dev|stage|prod]',
+		describe: 'define the deployment target [ dev | stage | prod ]',
 		type: 'string',
 		nargs: 1,
 		default: 'dev'
 	} )
+	// domains to start
+	.option( 'd', {
+		alias: 'domain',
+		describe: 'limit startup to certain domains',
+		type: 'array',
+		nargs: 1,
+		default: [ 'device', 'front-end', 'webhooks' ]
+	} )
 	.argv;
 
 var env = argv.env;
+var runDomains = argv.d;
 
-console.log( 'Using environment', env.green );
+log( chalk.green( '----' ), 'STARTING APPLICATION', chalk.green( '----' ) );
+log( 'Starting domains:', chalk.green( runDomains ) );
+log( 'Using environment:', chalk.green( env ) );
 
-var GLOBALS = {
-	ENV: require( `./shared/js/data/env/${env}` )
-};
-
-
-// ------------------------------------------------------
-// front-end server
-
-var FrontEnd = require( './front-end/js/main' );
-FrontEnd.start( GLOBALS );
-
+// var GLOBALS = {
+// 	ENV: require( `./shared/js/data/env/${env}` )
+// };
 
 // ------------------------------------------------------
-// back-end server
-if ( env !== 'dev' ) {
-	var BackEnd = require( './api/js/main' );
-	BackEnd.start( GLOBALS );
-}
+// start domains
 
-// ------------------------------------------------------
-// Webhook server
-
-var Webhooks = require( './shared/js/HookServer' );
-Webhooks.start( GLOBALS );
+var startedDomains = _( pkg.domains )
+	.pick( runDomains )
+	.map( ( domain, domainName ) => {
+		var processPath = path.resolve( __dirname, domainName );
+		return cp.fork( path.resolve( processPath, 'start' ), [ '--env', env ], {
+				cwd: processPath
+			} )
+			.on( 'message', ( message ) => {
+				log( chalk.yellow( domainName ), message );
+			} );
+	} )
+	.value();

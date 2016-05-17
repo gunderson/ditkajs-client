@@ -1,8 +1,8 @@
 var _ = require( 'lodash' );
-var TaskPage = require( '../../../../shared/js/TASK/Page' );
-var MainMenuView = require( '../ui/Main-menu-view' );
-var MasterPageView = require( '../master-page/View' );
-var ControlPanelPageView = require( '../control-panel-page/View' );
+var TaskPage = require( '../../../shared/js/TASK/Page' );
+var MainMenuView = require( './ui/Main-menu-view' );
+var MasterPageView = require( './pages/Master-page-view' );
+var ControlPanelPageView = require( './pages/control-panel-page-view' );
 
 class AppPage extends TaskPage {
 	constructor( options ) {
@@ -27,7 +27,7 @@ class AppPage extends TaskPage {
 
 		super( _.extend( {
 			name: 'app-page',
-			views: uiViews.concat( pageViews )
+			views: [].concat( uiViews, pageViews )
 		}, options ) );
 
 		this.pageViews = pageViews;

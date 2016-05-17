@@ -1,5 +1,6 @@
 var _ = require( 'lodash' );
-var TaskModel = require( '../../../../shared/js/TASK/Model' );
+var $ = require( 'jquery' );
+var TaskModel = require( '../../../shared/js/TASK/Model' );
 var page = require( 'page' );
 
 class AppModel extends TaskModel {
@@ -9,12 +10,16 @@ class AppModel extends TaskModel {
 		// ---------------------------------------------------------
 		// Local Props
 
+		console.log( this.prototype );
+		console.log( this );
+
 		_.extend( this, {
 			prevRoute: null,
-			// nonsensical route for boot-up
 			_route: {
-				parts: [ '!!!!!' ]
-			}
+				parts: [ 'bootstrap route' ]
+			},
+			deviceAddress: this.GLOBALS.ENV.DOMAINS.device.address,
+			devicePort: this.GLOBALS.ENV.DOMAINS.device.port
 		} );
 
 		// ---------------------------------------------------------
@@ -22,6 +27,7 @@ class AppModel extends TaskModel {
 
 		TaskModel.bindFunctions( this, [
 			'setupRouter',
+			'setupSocket',
 			'onRoute'
 		] );
 
@@ -29,10 +35,33 @@ class AppModel extends TaskModel {
 		// Init chain
 
 		// this.setupRouter();
+		// this.setupSocket();
+	}
+
+	// ---------------------------------------------------------
+	// Controls
+
+	play() {
+		return $.get( `http://${this.deviceAddress}:${this.devicePort}/play` );
+	}
+
+	stop() {
+		return $.get( `http://${this.deviceAddress}:${this.devicePort}/stop` );
+	}
+
+	setLed( id, state ) {
+		return $.get( `http://${this.deviceAddress}:${this.devicePort}/led/${id}/${state}` );
 	}
 
 	// ---------------------------------------------------------
 	// Routing
+
+	setupSocket() {
+		// this.socket = io( `http://${this.localAddress}` );
+		// this.socket.on( 'connect', function() {} );
+		// this.socket.on( 'event', function( data ) {} );
+		// this.socket.on( 'disconnect', function() {} );
+	}
 
 	setupRouter( routes ) {
 		page.base( '/#' );

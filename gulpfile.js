@@ -36,7 +36,7 @@ var argv = require( 'yargs' )
 	// help text
 	.alias( 'h', 'help' )
 	.help( 'help' )
-	.usage( 'Usage: $0 -env [dev|stage|prod]' )
+	.usage( 'Usage: $0 -env [options]' )
 	.showHelpOnFail( false, 'Specify --help for available options' )
 	// environment
 	.option( 'env', {
@@ -52,6 +52,7 @@ var env = argv.env;
 gutil.log( 'Using environment', gutil.colors.green( env ) );
 
 // --------------------------------------------------
+// Environment vars
 
 var GLOBALS = {
 	ENV: require( `./src/shared/js/data/env/${env}` )
@@ -59,6 +60,7 @@ var GLOBALS = {
 var META = require( './src/shared/js/data/meta.json' );
 
 // --------------------------------------------------
+// Setup domain tasks
 
 _.each( pkg.domains, setupDomainTasks );
 
@@ -86,6 +88,28 @@ function setupDomainTasks( domainSettings, domainName ) {
 		return gulp.src( `./src/${domainName}/js/**/*` )
 			.pipe( plumber( onError ) )
 			.pipe( gulp.dest( `./dist/${domainName}/js/` ) )
+			.pipe( livereload() )
+			.on( 'error', gutil.log );
+	} );
+
+	// --------------------------------------------------
+
+	gulp.task( `copy-start:${domainName}`, function() {
+		return gulp.src( `./src/${domainName}/start.js` )
+			.pipe( plumber( onError ) )
+			.pipe( gulp.dest( `./dist/${domainName}/` ) )
+			.pipe( livereload() )
+			.on( 'error', gutil.log );
+	} );
+
+	// --------------------------------------------------
+
+	// TODO: process assets
+	gulp.task( `copy-assets:${domainName}`, [ `copy-js-src:${domainName}`, `copy-start:${domainName}` ], function() {
+		return gulp
+			.src( `./src/${domainName}/assets/**/*` )
+			.pipe( plumber( onError ) )
+			.pipe( gulp.dest( `./dist/${domainName}/assets/` ) )
 			.pipe( livereload() )
 			.on( 'error', gutil.log );
 	} );
@@ -232,18 +256,6 @@ function setupDomainTasks( domainSettings, domainName ) {
 
 	// --------------------------------------------------
 
-	// TODO: process assets
-	gulp.task( `copy-assets:${domainName}`, function() {
-		return gulp
-			.src( `./src/${domainName}/assets/**/*` )
-			.pipe( plumber( onError ) )
-			.pipe( gulp.dest( `./dist/${domainName}/assets/` ) )
-			.pipe( livereload() )
-			.on( 'error', gutil.log );
-	} );
-
-	// --------------------------------------------------
-
 	gulp.task( `watch:${domainName}`,
 		function() {
 			livereload.listen( domainSettings.lrPort );
@@ -268,6 +280,7 @@ function setupDomainTasks( domainSettings, domainName ) {
 }
 
 // --------------------------------------------------
+// General project tasks
 
 gulp.task( 'clean', function() {
 	return gulp

@@ -1,7 +1,6 @@
 'use strict';
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
-// var io = require( 'socket.io-client' );
 var TaskPage = require( '../../../../shared/js/TASK/Page' );
 
 class Page extends TaskPage {
@@ -10,7 +9,7 @@ class Page extends TaskPage {
 		// ---------------------------------------------------
 		// Local Properties
 
-		super( _.extend( {
+		super( _.defaults( options, {
 			name: 'control-panel-page',
 			events: [ {
 				eventName: 'click',
@@ -25,18 +24,12 @@ class Page extends TaskPage {
 				selector: 'input:checkbox',
 				handler: 'onChangeCheckbox'
 			} ]
-		}, options ) );
-
-		_.extend( this, {
-			serverAddress: this.GLOBALS.ENV.DOMAINS.api.address,
-			serverPort: this.GLOBALS.ENV.DOMAINS.api.serverPort
-		} );
+		} ) );
 
 		// ---------------------------------------------------
 		// Bind Functions
 
 		TaskPage.bindFunctions( this, [
-			'setupSocket',
 			'onClickPlay',
 			'onClickStop',
 			'onChangeCheckbox'
@@ -45,23 +38,14 @@ class Page extends TaskPage {
 		// ---------------------------------------------------
 		// Event Handlers
 
-		this.setupSocket();
-
-	}
-
-	setupSocket() {
-		// this.socket = io( `http://${this.localAddress}` );
-		// this.socket.on( 'connect', function() {} );
-		// this.socket.on( 'event', function( data ) {} );
-		// this.socket.on( 'disconnect', function() {} );
 	}
 
 	onClickPlay() {
-		return $.get( `http://${this.localAddress}:${this.localPort}/play` );
+		APP.play();
 	}
 
 	onClickStop() {
-		return $.get( `http://${this.localAddress}:${this.localPort}/stop` );
+		APP.stop();
 	}
 
 	onChangeCheckbox( evt ) {
@@ -71,7 +55,6 @@ class Page extends TaskPage {
 				.each( ( i, el ) => {
 					target.value === i ? el.checked = true : el.checked = false;
 				} );
-			$.get( `http://${this.localAddress}:${this.localPort}/led/${target.value}/on` );
 		} else {
 			$.get( `http://${this.localAddress}:${this.localPort}/led/${target.value}/off` );
 		}

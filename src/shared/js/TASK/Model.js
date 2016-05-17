@@ -1,6 +1,7 @@
 var _ = require( 'lodash' );
 var $ = require( 'jquery' );
 var TASK = require( './TASK' );
+var TaskCollection = require( './Collection' );
 
 class Model extends TASK {
 	constructor( attributes, options ) {
@@ -14,10 +15,14 @@ class Model extends TASK {
 		// ---------------------------------------------------
 		// Record Options
 
-		this._options = _.extend( {
+		this._options = _.defaults( options, {
+			// Whether or not to convert attributes that are collections to a list of model ids rather than saving the complete model
 			'toJSONRefs': false,
+			// List Attribute names you don't want to save when converting to json
+			// useful when you have a property that you want to monitor changes on
+			// but that doesn't need to be saved to the server
 			'omitAttributes': []
-		}, options );
+		} );
 
 		// ---------------------------------------------------
 		// Record Attributes
@@ -46,7 +51,7 @@ class Model extends TASK {
 		_.each( this._attributes, this.makeAttribute );
 
 		// ---------------------------------------------------
-		// Event Handling
+		// Event Handlers
 
 	}
 
@@ -89,10 +94,19 @@ class Model extends TASK {
 			.omit( this._options.omitAttributes )
 			.cloneDeepWith( ( a ) => {
 				// pass toJSONRefs to tell collections that may be children of this model whether to
-				// save their children as objects or just IDs that can be picked up as references from a master collection
-				if ( a.toJSON ) return a.toJSON( this._options.toJSONRefs );
+				// save their children as objects or just IDs that can be picked up as references from a master collection when rebuilding
+				if ( a.toJSON ) {
+					return a.toJSON( this._options.toJSONRefs );
+				};
+				return a;
 			} )
 			.value();
+	}
+
+	// ---------------------------------------------------
+
+	static deRef( sourceCollection, idList ) {
+		return new TaskCollection( sourceCollection.get( idList ) );
 	}
 
 	// ---------------------------------------------------

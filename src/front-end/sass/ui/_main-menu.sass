@@ -1,7 +1,7 @@
 $menu-link-color: #ccc
 $menu-link-hover-color: #fff
 $menu-handle-size: 35rem
-$handle-margin: 10rem
+$menu-margin: 10rem
 
 #main-menu
 	font-family: $header-font-family
@@ -12,21 +12,25 @@ $handle-margin: 10rem
 		transform: translate3d(-$menu-width,0,0)
 		.handle
 			transform: translate3d($menu-width, -$header-height,0)
+			.open-icon
+				display: none
+			.close-icon
+				display: block
 	position: absolute
 	top: 0
 	right: -$menu-width
 	height: 100%
 	//margin: $header-height 0
 	width: $menu-width
-	background-color: 111
+	background-color: #111
 	a
-		font-size: 20rem
+		font-size: 18rem
 		text-transform: uppercase
 		text-decoration: none
 		display: block
-		height: 40rem
-		line-height: 20rem
-		margin: 10rem
+		height: $menu-handle-size
+		line-height: 18rem
+		margin: $menu-margin
 		padding: 10rem
 		color: $menu-link-color
 		&:hover
@@ -40,11 +44,11 @@ $handle-margin: 10rem
 		display: table
 		position: absolute
 		top: 0
-		top: $header-height + $handle-margin
-		left: -$menu-handle-size - $handle-margin
+		top: $header-height + $menu-margin
+		left: -$menu-handle-size - $menu-margin
 		width: $menu-handle-size
 		height: $menu-handle-size
-		background-color: #000
+		background-color: rgba(0,0,0,0.5)
 		color: #ccc
 		cursor: pointer
 		&:hover
@@ -55,3 +59,5 @@ $handle-margin: 10rem
 			display: table-cell
 			vertical-align: middle
 			text-align: center
+		.close-icon
+			display: none
