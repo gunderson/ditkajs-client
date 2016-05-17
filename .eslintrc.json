@@ -81,7 +81,7 @@
 			2,
 			"^(err|error)$"
 		],
-		"indent": [2, "tab"],
+		"indent": [1, "tab"],
 		"jsx-quotes": [
 			2,
 			"prefer-single"

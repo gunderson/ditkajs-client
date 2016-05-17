@@ -1,3 +1,5 @@
+/* eslint indent:0 no-unused-vars:0*/
+
 var _ = require( 'lodash' );
 var pkg = require( '../package.json' );
 var chalk = require( 'chalk' );
@@ -35,7 +37,7 @@ var argv = require( 'yargs' )
 		describe: 'limit startup to certain domains',
 		type: 'array',
 		nargs: 1,
-		default: [ 'device', 'front-end', 'webhooks' ]
+		default: [ 'device', 'front-end', 'webhooks', 'autoupdate' ]
 	} )
 	.argv;
 
@@ -43,8 +45,8 @@ var env = argv.env;
 var runDomains = argv.d;
 
 log( chalk.green( '----' ), 'STARTING APPLICATION', chalk.green( '----' ) );
-log( 'Starting domains:', chalk.green( runDomains ) );
-log( 'Using environment:', chalk.green( env ) );
+log( chalk.green( 'Starting domains:' ), runDomains );
+log( chalk.green( 'Using environment:' ), env );
 
 // var GLOBALS = {
 // 	ENV: require( `./shared/js/data/env/${env}` )

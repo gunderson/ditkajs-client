@@ -1,99 +1,108 @@
 {
-	"name": "rpi-lighthub",
-	"version": "0.1.0",
-	"description": "Simple LED blink in node.js with resin.io on pi3",
-	"main": "main.js",
-	"scripts": {
-		"start": "gulp --env prod && node --harmony ./dist/start --env prod",
-		"stage": "gulp --env stage && node --harmony ./dist/start --env stage",
-		"dev": "gulp --env dev && node --harmony ./dist/start --env dev",
-		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'"
-	},
-	"browserify": {
-		"transform": [
-			[
-				"babelify", {
-					"presets": [
-						"es2015"
-					]
-				}
-			]
-		]
-	},
-	"browser": {
-		"TweenMax": "./node_modules/gsap/src/minified/TweenMax.min.js",
-		"jquery.gsap": "./node_modules/gsap/src/minified/jquery.gsap.min.js",
-		"jquery.browser": "./node_modules/jquery.browser/dist/jquery.browser.js",
-		"howler": "./node_modules/howler/howler.js"
-	},
-	"author": "Patrik Gunderson",
-	"license": "MIT",
-	"repository": "https://github.com/gunderson/rpi3-lighthub-resin.git",
-	"dependencies": {
-		"babel": "^6.5.2",
-		"babel-core": "^6.8.0",
-		"babel-preset-es2015": "^6.6.0",
-		"babelify": "^7.3.0",
-		"backbone-events-standalone": "^0.2.7",
-		"body-parser": "^1.15.0",
-		"browserify": "^13.0.1",
-		"domain": "0.0.1",
-		"express": "^4.13.4",
-		"git-web-hooks": "0.0.3",
-		"graceful-fs": "^4.1.3",
-		"gsap": "^1.18.4",
-		"gulp": "*",
-		"gulp-babel": "^6.1.2",
-		"gulp-browserify": "^0.5.1",
-		"gulp-csso": "*",
-		"gulp-jst-concat": "github:gunderson/gulp-jst-concat",
-		"gulp-livereload": "*",
-		"gulp-plumber": "^1.1.0",
-		"gulp-pug": "^3.0.2",
-		"gulp-rename": "github:gunderson/gulp-rename",
-		"gulp-rm": "^1.0.1",
-		"gulp-sass": "*",
-		"gulp-tap": "^0.1.3",
-		"gulp-uglify": "*",
-		"gulp-util": "^3.0.7",
-		"howler": "^1.1.29",
-		"johnny-five": "^0.9.44",
-		"jquery": "^2.2.3",
-		"jquery.browser": "^0.1.0",
-		"lirc_node": "0.0.4",
-		"lodash": "^4.11.2",
-		"marked": "^0.3.5",
-		"method-override": "^2.3.5",
-		"morgan": "^1.7.0",
-		"multer": "^1.1.0",
-		"node-sass": "*",
-		"npm": "^3.8.8",
-		"page": "^1.7.1",
-		"pug": "^2.0.0-alpha7",
-		"raspi": "github:gunderson/raspi",
-		"raspi-io": "*",
-		"resin-device-config": "^3.0.1",
-		"serialport": "*",
-		"serve-favicon": "^2.3.0",
-		"socketio": "^1.0.0",
-		"vinyl-buffer": "^1.0.0",
-		"vinyl-named": "^1.1.0",
-		"vinyl-source-stream": "^1.1.0"
-	},
-	"domains": {
-		"front-end": {
-			"port": 3000,
-			"address": "10.0.1.14",
-			"lrPort": 35729
-		},
-		"device": {
-			"port": 3001,
-			"address": "10.0.1.14",
-			"lrPort": 35728
-		},
-		"webhooks": {
-			"port": 3333,
-			"address": "10.0.1.14"
-		}
-	}
+  "name": "rpi-lighthub",
+  "version": "0.1.0",
+  "description": "Simple LED blink in node.js with resin.io on pi3",
+  "main": "main.js",
+  "scripts": {
+    "start": "gulp --env prod && node --harmony ./dist/start --env prod",
+    "stage": "gulp --env stage && node --harmony ./dist/start --env stage",
+    "dev": "gulp --env dev && node --harmony ./dist/start --env dev",
+    "watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
+  },
+  "browser": {
+    "TweenMax": "./node_modules/gsap/src/minified/TweenMax.min.js",
+    "jquery.gsap": "./node_modules/gsap/src/minified/jquery.gsap.min.js",
+    "jquery.browser": "./node_modules/jquery.browser/dist/jquery.browser.js",
+    "howler": "./node_modules/howler/howler.js"
+  },
+  "author": "Patrik Gunderson",
+  "license": "MIT",
+  "repository": "https://github.com/gunderson/rpi3-lighthub-resin.git",
+  "dependencies": {
+    "art-kit": "github:gunderson/art-kit",
+    "babel": "^6.5.2",
+    "babel-core": "^6.8.0",
+    "babel-preset-es2015": "^6.6.0",
+    "babelify": "^7.3.0",
+    "backbone-events-standalone": "^0.2.7",
+    "body-parser": "^1.15.0",
+    "browserify": "^13.0.1",
+    "domain": "0.0.1",
+    "express": "^4.13.4",
+    "git-web-hooks": "0.0.3",
+    "graceful-fs": "^4.1.3",
+    "gsap": "^1.18.4",
+    "gulp": "*",
+    "gulp-babel": "^6.1.2",
+    "gulp-browserify": "^0.5.1",
+    "gulp-csso": "*",
+    "gulp-jst-concat": "github:gunderson/gulp-jst-concat",
+    "gulp-livereload": "*",
+    "gulp-plumber": "^1.1.0",
+    "gulp-pug": "^3.0.2",
+    "gulp-rename": "github:gunderson/gulp-rename",
+    "gulp-rm": "^1.0.1",
+    "gulp-sass": "*",
+    "gulp-tap": "^0.1.3",
+    "gulp-uglify": "*",
+    "gulp-util": "^3.0.7",
+    "howler": "^1.1.29",
+    "johnny-five": "^0.9.44",
+    "jquery": "^2.2.3",
+    "jquery.browser": "^0.1.0",
+    "lirc_node": "0.0.4",
+    "lodash": "^4.11.2",
+    "marked": "^0.3.5",
+    "method-override": "^2.3.5",
+    "morgan": "^1.7.0",
+    "multer": "^1.1.0",
+    "node-sass": "*",
+    "npm": "^3.8.8",
+    "page": "^1.7.1",
+    "pug": "^2.0.0-alpha7",
+    "q": "^1.4.1",
+    "raspi": "github:gunderson/raspi",
+    "raspi-io": "*",
+    "resin-device-config": "^3.0.1",
+    "serialport": "*",
+    "serve-favicon": "^2.3.0",
+    "socketio": "^1.0.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-named": "^1.1.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "domains": {
+    "front-end": {
+      "port": 3000,
+      "address": "10.0.1.14",
+      "lrPort": 35729
+    },
+    "device": {
+      "port": 3001,
+      "address": "10.0.1.14",
+      "lrPort": 35728
+    },
+    "webhooks": {
+      "port": 3333,
+      "address": "10.0.1.14"
+    },
+    "autoupdate": {
+      "pollFrequency": 60000,
+      "srcPath": "/usr/src/app/",
+      "remoteHost": "api.github.com",
+      "remotePath": "/repos/gunderson/rpi3-lighthub-resin/commits"
+    }
+  }
 }

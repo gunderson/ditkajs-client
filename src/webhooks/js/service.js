@@ -1,3 +1,4 @@
+/* eslint indent:0 no-unused-vars:0*/
 'use strict';
 // var _ = require( 'lodash' );
 var cp = require( 'child_process' );
@@ -9,7 +10,7 @@ var GitWebhooks = require( 'git-web-hooks' );
 class Server extends TASK {
 	constructor( GLOBALS ) {
 		super();
-		log( chalk.green( 'Front-end server' ), 'starting', __dirname );
+		log( chalk.green( 'Webhook server' ), 'starting', __dirname );
 
 		this.webserver = new GitWebhooks( {
 				PORT: 3333
@@ -21,7 +22,6 @@ class Server extends TASK {
 				res.send( 'got it!' );
 			} );
 		log( chalk.green( 'Webhook server' ), 'listening on port:', chalk.green( `${GLOBALS.ENV.DOMAINS.webhooks.port}` ) );
-
 	}
 }
 

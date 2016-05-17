@@ -3,6 +3,7 @@ var _ = require( 'lodash' );
 var TASK = require( '../../shared/js/TASK/TASK' );
 var Raspi = require( 'raspi-io' );
 var five = require( 'johnny-five' );
+var AnimationPlayer = require( 'art-kit/AnimationPlayer' );
 
 class Robot extends TASK {
 	constructor( GLOBALS ) {
@@ -22,6 +23,8 @@ class Robot extends TASK {
 		this.startTime = 0;
 		this.patternFunction = this.sweep;
 		this.runTime = 0;
+
+		this.animationPlayer = new AnimationPlayer( this.update.bind( this ) );
 
 		this.board.on( 'ready', this.setup.bind( this ) );
 	}

@@ -3,15 +3,13 @@ FROM resin/raspberrypi3-node:6.0.0
 # Enable systemd
 ENV INITSYSTEM on
 
-# Your code goes here
-
 ##############
 
 # Add extra software sources
 
 # RUN apt-get update -qq
 
-# Libsass requirements.
+# install Libsass
 
 # RUN apt-get install -y curl git build-essential automake libtool
 #
@@ -31,6 +29,8 @@ ENV INITSYSTEM on
 # RUN make -C libsass -j5 install
 
 
+# install wiringPi
+# required by npm raspi raspi-io johnny-five
 
 RUN git clone git://git.drogon.net/wiringPi
 WORKDIR /wiringPi
@@ -38,22 +38,26 @@ RUN git pull origin
 RUN ./build
 WORKDIR /
 
-##############
+# install gulp for building the website source and node-gyp for compiling
 
 RUN npm set progress=false && npm update && npm install -g gulp node-gyp
 
-# Copies the package.json first for better cache on later pushes
+# Copy the package.json first for better cache on later pushes
+
 COPY package.json /usr/src/app/package.json
 COPY gulpfile.js /usr/src/app/gulpfile.js
 
-# Defines our working directory in container
+# Set the working directory in container
+
 WORKDIR /usr/src/app
 
-# This will copy all files in our root to the working  directory in the container
+# Copy all files in build server to the working  directory in the container
+
 COPY . ./
 
-# This install npm dependencies on the resin.io build server,
-# making sure to clean up the artifacts it creates in order to reduce the image size.
+# install npm dependencies on the build server, and clean up the
+# artifacts it creates in order to reduce the image size.
+
 RUN npm set progress=false && JOBS=MAX npm install --unsafe-perm && npm cache clean && rm -rf /tmp/*
 
 EXPOSE 3000
