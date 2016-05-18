@@ -5,17 +5,18 @@
 	overflow: hidden
 
 #pages
-	@include transition(transform 0.5s ease-out)
+	@include transition(transform 0.35s ease-out)
 	-webkit-overflow-scrolling
 	.menu-open &
 		display: block
 		transform: translate3d((-$menu-width/2),0,0)
 		.cover
+			@include transition(opacity 0.35s)
 			left: 0
 			opacity: 0.4
-			@include transition(opacity 0.5s ease-out, left 0s linear 0s)
 	.cover
-		@include transition(opacity 0.5s ease-out, left 0s linear 0.5s)
+		@include transition(opacity 0.35s)
+		transform: translate3d(0,0,0)
 		position: absolute
 		top: 0
 		left: 100%

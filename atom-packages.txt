@@ -17,6 +17,7 @@ minimap-find-and-replace@4.5.1
 minimap-git-diff@4.3.0
 minimap-highlight-selected@4.4.0
 pretty-json@1.0.3
+sort-lines@0.14.0
 space-tab@0.4.2
 spacegray-atom-dark-ui@1.0.0
 spacegray-dark-syntax@0.2.0

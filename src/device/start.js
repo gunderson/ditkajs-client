@@ -45,3 +45,6 @@ var robot = new Robot( GLOBALS );
 apiServer.on( 'led', robot.led );
 apiServer.on( 'play', robot.play );
 apiServer.on( 'stop', robot.stop );
+apiServer.on( 'update', autoupdate.update );
+
+// TODO: send out a push-notification registration request to Ditka server

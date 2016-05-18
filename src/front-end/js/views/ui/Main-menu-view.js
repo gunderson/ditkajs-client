@@ -1,4 +1,5 @@
 var _ = require( 'lodash' );
+var $ = require( 'jquery' );
 var TaskView = require( '../../../../shared/js/TASK/View' );
 
 class Menu extends TaskView {
@@ -31,16 +32,19 @@ class Menu extends TaskView {
 	}
 
 	openMenu( e ) {
-		this.$el.addClass( 'menu-open' );
+		$( 'html' )
+			.addClass( 'menu-open' );
 	}
 
 	closeMenu( e ) {
-		this.$el.removeClass( 'menu-open' );
+		$( 'html' )
+			.removeClass( 'menu-open' );
 	}
 
 	toggleMenu( e ) {
 		console.log( this.$el );
-		this.$el.toggleClass( 'menu-open' );
+		$( 'html' )
+			.toggleClass( 'menu-open' );
 	}
 }
 

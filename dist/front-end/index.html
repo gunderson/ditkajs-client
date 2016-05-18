@@ -25,7 +25,7 @@
     <meta property="twitter:image" content=""/>
     <meta property="twitter:description" content=""/>
     <link rel="stylesheet" type="text/css" href="index.css"/>
-    <script type="text/javascript">var GLOBALS = {"ENV":{"DOMAINS":{"front-end":{"port":3000,"address":"10.0.1.14","lrPort":35729},"device":{"port":3001,"address":"10.0.1.14","lrPort":35728},"webhooks":{"port":3333,"address":"10.0.1.14"},"autoupdate":{"pollFrequency":60000,"srcPath":"/usr/src/app/","remoteHost":"raw.githubusercontent.com","remotePath":"/gunderson/rpi3-lighthub-resin/master/package.json"}},"name":"dev"},"COPY":{"control-panel":{"mainTitle":"IoT Control Panel","Play":"Play","Stop":"Stop"}}};
+    <script type="text/javascript">var GLOBALS = {"ENV":{"DOMAINS":{"front-end":{"port":3000,"address":"10.0.1.14","lrPort":35729},"device":{"port":3001,"address":"10.0.1.14","lrPort":35728,"autoupdate":{"pollFrequency":60000,"srcPath":"/usr/src/app/","remoteHost":"raw.githubusercontent.com","remotePath":"/gunderson/rpi3-lighthub-resin/master/package.json"}},"webhooks":{"port":3333,"address":"10.0.1.14"}},"name":"dev"},"COPY":{"control-panel":{"mainTitle":"IoT Control Panel","Play":"Play","Stop":"Stop"}}};
       var env = "dev";
       var lang = "en";
     </script>
@@ -42,18 +42,22 @@
     <div id="app-page">
       <div id="site-loader"></div>
       <div id="main-menu">
-        <div class="handle">
+        <button class="handle expando-button">
           <div class="contents">
-            <div class="open-icon fa fa-bars"></div>
-            <div class="close-icon fa fa-close"></div>
+            <div class="glyf">
+              <div class="icon open-icon fa fa-gear"></div>
+            </div>
+            <div class="glyf">
+              <div class="icon close-icon fa">&#8677;</div>
+            </div>
           </div>
-        </div><a class="closer" href="#/master">Master Page</a><a class="closer" href="#/control-panel">Control Panel</a>
+        </button><a class="closer" href="#/master">Master Page</a><a class="closer" href="#/control-panel">Control Panel</a>
       </div>
       <header>
         <h1>Citi - Taste of the Nation Installation</h1>
       </header>
       <footer>
-        <div class="left"><a class="closer" href="#/">Master Controller</a></div>
+        <div class="left"><a href="#/">Master Controller</a></div>
         <div class="center"></div>
         <div class="right"><a class="share-icon facebook" href="http://www.facebook.com/sharer.php?u=#{encodeURIComponent(META.url)}"></a><a class="share-icon twitter" href="http://twitter.com/share?text=#{encodeURIComponent(META.url)}&amp;url=#{encodeURIComponent(META.twitter.description)}"></a><a class="share-icon tumblr" href="http://www.tumblr.com/share/link?url=#{encodeURIComponent(META.url)}&amp;name='#{encodeURIComponent(META.tumblr.title)}&amp;description=#{encodeURIComponent(META.tumblr.description)}"></a><a class="share-icon pinterest" href="http://pinterest.com/pin/create/button/?url=#{encodeURIComponent(META.url)}"></a><a class="share-icon google-plus" href="https://plus.google.com/share?url=#{encodeURIComponent(META.url)}"></a></div>
       </footer>
@@ -61,42 +65,44 @@
         <section class="page" id="control-panel-page">
           <div class="background"></div>
           <div class="content">
-            <h1>IoT Control Panel
-              <div class="form">
-                <label>2
-                  <input type="checkbox" value="2"/>
-                </label>
-                <label>3
-                  <input type="checkbox" value="3"/>
-                </label>
-                <label>4
-                  <input type="checkbox" value="4"/>
-                </label>
-                <label>5
-                  <input type="checkbox" value="5"/>
-                </label>
-                <label>6
-                  <input type="checkbox" value="6"/>
-                </label>
-                <label>7
-                  <input type="checkbox" value="7"/>
-                </label>
-                <label>8
-                  <input type="checkbox" value="8"/>
-                </label>
-                <label>9
-                  <input type="checkbox" value="9"/>
-                </label>
-                <label>10
-                  <input type="checkbox" value="10"/>
-                </label>
-                <label>11
-                  <input type="checkbox" value="11"/>
-                </label>
-                <button class="play">Play</button>
-                <button class="stop">Stop</button>
-              </div>
-            </h1>
+            <div class="scrollable">
+              <h1>IoT Control Panel
+                <div class="form">
+                  <label>2
+                    <input type="checkbox" value="2"/>
+                  </label>
+                  <label>3
+                    <input type="checkbox" value="3"/>
+                  </label>
+                  <label>4
+                    <input type="checkbox" value="4"/>
+                  </label>
+                  <label>5
+                    <input type="checkbox" value="5"/>
+                  </label>
+                  <label>6
+                    <input type="checkbox" value="6"/>
+                  </label>
+                  <label>7
+                    <input type="checkbox" value="7"/>
+                  </label>
+                  <label>8
+                    <input type="checkbox" value="8"/>
+                  </label>
+                  <label>9
+                    <input type="checkbox" value="9"/>
+                  </label>
+                  <label>10
+                    <input type="checkbox" value="10"/>
+                  </label>
+                  <label>11
+                    <input type="checkbox" value="11"/>
+                  </label>
+                  <button class="play">Play</button>
+                  <button class="stop">Stop</button>
+                </div>
+              </h1>
+            </div>
           </div>
         </section>
         <section class="page" id="master-page">
@@ -105,7 +111,7 @@
             <h1>Master Projection Map</h1>
           </div>
         </section>
-        <div class="cover"></div>
+        <div class="cover vignette"></div>
       </div>
     </div>
     <script src="index.js"></script>

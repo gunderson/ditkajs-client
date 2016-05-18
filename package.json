@@ -5,10 +5,9 @@
 	"main": "main.js",
 	"scripts": {
 		"start": "gulp --env prod && node --harmony ./dist/start --env prod -d 'front-end' -d 'device'",
-		"stage": "gulp --env stage && node --harmony ./dist/start --env stage",
-		"dev": "gulp --env dev && node --harmony ./dist/start --env dev",
-		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'",
-		"autoupdate": "gulp --env dev && node --harmony ./dist/start --env prod -d 'front-end' -d 'autoupdate'"
+		"stage": "gulp --env stage && node --harmony ./dist/start --env stage -d 'front-end' -d 'device'",
+		"dev": "gulp --env dev && node --harmony ./dist/start --env dev -d 'front-end' -d 'device'",
+		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'"
 	},
 	"browserify": {
 		"transform": [
@@ -106,5 +105,5 @@
 			"address": "10.0.1.14"
 		}
 	},
-	"build-id": "03418aae856bff23b9b124d1903dd084de3c49cfcee10faa4810f4c53f98a582"
+	"build-id": "d228db49a56aa17247d70ea8d611a473517d291baedd0e3ee8161156867b8d64"
 }

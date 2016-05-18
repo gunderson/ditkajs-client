@@ -19,7 +19,9 @@ class Server extends TASK {
 			.get( ( req, res, next ) => {
 				HeaderUtils.addJSONHeader( res );
 				HeaderUtils.addCORSHeader( res );
-				res.send( req.params );
+				res.send( {
+					status: 'ok'
+				} );
 				next();
 			} );
 
@@ -38,7 +40,7 @@ class Server extends TASK {
 				res.send( {
 					play: true
 				} );
-				this.trigger( 'play', req.params.id );
+				this.trigger( 'play' );
 			} );
 
 		router.route( '/stop' )
@@ -48,7 +50,17 @@ class Server extends TASK {
 				res.send( {
 					stop: true
 				} );
-				this.trigger( 'stop', req.params.id );
+				this.trigger( 'stop' );
+			} );
+
+		router.route( '/update/:from' )
+			.get( ( req, res, next ) => {
+				HeaderUtils.addJSONHeader( res );
+				HeaderUtils.addCORSHeader( res );
+				res.send( {
+					update: true
+				} );
+				this.trigger( 'update', req.params );
 			} );
 
 		app.use( '/', router );

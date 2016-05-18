@@ -7,11 +7,16 @@ $menu-margin: 10rem
 	font-family: $header-font-family
 	color: #ccc
 	z-index: 5
-	@include transition(transform 0.35s ease-out)
-	&.menu-open
+	@include transition(transform 0.35s ease-out, box-shadow 0.35s ease-out)
+	@include box-shadow(0)
+
+	.menu-open &
 		transform: translate3d(-$menu-width,0,0)
+		@include box-shadow(5, rgba(255,255,255,0.1))
 		.handle
-			transform: translate3d($menu-width, -$header-height,0)
+			@include box-shadow(.25)
+			/*transform: translate3d($menu-margin, -$menu-margin, 0)*/
+			background-color: rgba(32,32,32,0.5)
 			.open-icon
 				display: none
 			.close-icon
@@ -19,11 +24,13 @@ $menu-margin: 10rem
 	position: absolute
 	top: 0
 	right: -$menu-width
-	height: 100%
-	//margin: $header-height 0
+	height: calc(100% - #{$header-height + $footer-height})
+	margin: $header-height 0 $footer-height
 	width: $menu-width
 	background-color: #111
 	a
+		@include transition(box-shadow 0.35s ease-out, background-color 0.05s, color 0.05s)
+
 		font-size: 18rem
 		text-transform: uppercase
 		text-decoration: none
@@ -40,19 +47,22 @@ $menu-margin: 10rem
 			background-color: #222
 			color: #ddd
 	.handle
-		@include transition(transform 0.35s ease-out)
-		display: table
-		position: absolute
-		top: 0
-		top: $header-height + $menu-margin
+		@include transition(transform 0.35s ease-out, box-shadow 0.35s ease-out, background-color 0.025s, color 0.025s)
+		@include box-shadow(.25)
+		display: block
+		/*position: absolute*/
+		top: $menu-margin
 		left: -$menu-handle-size - $menu-margin
 		width: $menu-handle-size
 		height: $menu-handle-size
 		background-color: rgba(0,0,0,0.5)
 		color: #ccc
 		cursor: pointer
+		.icon, icon:before
+			height: 100%
+			line-height: $menu-handle-size
 		&:hover
-			background-color: #444
+			background-color: rgba(0,0,0,0.9)
 			color: #fff
 		.contents
 			font-size: 20rem
