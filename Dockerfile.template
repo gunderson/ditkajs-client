@@ -57,8 +57,8 @@ COPY . ./
 
 # make the working dir a git repo to pull updates from
 
-RUN git config user.email "pat@theorigin.net" && git config user.name "gunderson" \
-&& git init \
+RUN git init \
+&& git config user.email "pat@theorigin.net" && git config user.name "gunderson" \
 && git remote add origin https://github.com/gunderson/rpi3-lighthub-resin.git \
 && git add . \
 && git commit -m 'tmp' \
