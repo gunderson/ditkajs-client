@@ -6,14 +6,15 @@ var log = require( '../../shared/js/TASK/utils/log' );
 var chalk = require( 'chalk' );
 var fs = require( 'fs' );
 var https = require( 'https' );
+var path = require( 'path' );
 var Q = require( 'q' );
 
 class Service extends TASK {
-	constructor( GLOBALS ) {
+	constructor() {
 		super();
 		log( chalk.green( 'autoupdate server' ), 'starting', __dirname );
 
-		this.pkg = fs.readFileSync( '../../../package.json', 'utf-8', ( err ) => {
+		this.pkg = fs.readFileSync( path.resolve( __dirname, '../../../package.json' ), 'utf-8', ( err ) => {
 			if ( err ) {
 				// we don't have a local repo
 				// make a git repo
@@ -23,27 +24,32 @@ class Service extends TASK {
 			}
 		} );
 
-		this.pollGit();
+		this.pkg = JSON.parse( this.pkg );
 
-		log( chalk.green( 'autoupdate service' ), 'polling every:', chalk.green( `${GLOBALS.pkg.domains.autoupdate.pollFrequency} ms` ) );
+		this.pollGit()
+			.then( this.onReply.bind( this ) );
+
+		log( chalk.green( 'autoupdate service' ), 'polling every:', chalk.green( `${this.pkg.domains.autoupdate.pollFrequency}ms` ) );
 	}
 
 	start() {
 
 	}
 
-	static pollGit() {
+	pollGit() {
 		log( chalk.green( 'autoupdate server' ), 'checking version' );
 		var def = Q.defer();
 		var options = {
-			hostname: GLOBALS.pkg.domains.autoupdate.remoteAddress,
+			hostname: this.pkg.domains.autoupdate.remoteHost,
 			port: 443,
-			path: GLOBALS.pkg.domains.autoupdate.remotePath,
+			path: this.pkg.domains.autoupdate.remotePath,
 			method: 'GET',
 			headers: {
 				'user-agent': 'nodejs autoupdate ping'
 			}
 		};
+		log( chalk.cyan( 'autoupdate error:\n' ), options );
+
 
 		var req = https.request( options, ( res ) => {
 			var data = [];
@@ -54,9 +60,9 @@ class Service extends TASK {
 		req.end();
 
 		req.on( 'error', ( e ) => {
-			log( chalk.red( 'autoupdate error:' ), e );
+			log( chalk.red( 'autoupdate error:\n' ), e );
 		} );
-		return def;
+		return def.promise;
 	}
 
 	onReply( remotePkg ) {
@@ -71,7 +77,7 @@ class Service extends TASK {
 	getLatest() {
 		cp.exec( 'git pull --force', ( error, stdout, stderr ) => {
 			if ( error ) {
-				log( chalk.red( 'autoupdate error:' ), error );
+				log( chalk.red( 'autoupdate error:\n' ), error );
 			}
 			this.pullComplete();
 		} );

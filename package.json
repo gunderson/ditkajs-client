@@ -4,10 +4,11 @@
 	"description": "Simple LED blink in node.js with resin.io on pi3",
 	"main": "main.js",
 	"scripts": {
-		"start": "gulp --env prod && node --harmony ./dist/start --env prod",
+		"start": "gulp --env prod && node --harmony ./dist/start --env prod -d 'front-end' -d 'autoupdate'",
 		"stage": "gulp --env stage && node --harmony ./dist/start --env stage",
 		"dev": "gulp --env dev && node --harmony ./dist/start --env dev",
-		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'"
+		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'",
+		"autoupdate": "gulp --env dev && node --harmony ./dist/start --env prod -d 'front-end' -d 'autoupdate'"
 	},
 	"browserify": {
 		"transform": [
@@ -105,5 +106,5 @@
 			"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
 		}
 	},
-	"build-id": "dab162d3c1dbcf1f1796a6e229cd6d1b5eb900f4e74d230b8c3a88113b26e3b3"
+	"build-id": "b7023d5481b7f6db0e0475bf3836f042404bfd57624d5b6ac8bf0752e0078579"
 }
