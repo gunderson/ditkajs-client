@@ -93,18 +93,18 @@
 		"device": {
 			"port": 3001,
 			"address": "10.0.1.14",
-			"lrPort": 35728
+			"lrPort": 35728,
+			"autoupdate": {
+				"pollFrequency": 60000,
+				"srcPath": "/usr/src/app/",
+				"remoteHost": "raw.githubusercontent.com",
+				"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
+			}
 		},
 		"webhooks": {
 			"port": 3333,
 			"address": "10.0.1.14"
-		},
-		"autoupdate": {
-			"pollFrequency": 60000,
-			"srcPath": "/usr/src/app/",
-			"remoteHost": "raw.githubusercontent.com",
-			"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
 		}
 	},
-	"build-id": "606935572b252d03d7373b1aedb1893b03783b620c476800921ad9c977b9fe93"
+	"build-id": "03418aae856bff23b9b124d1903dd084de3c49cfcee10faa4810f4c53f98a582"
 }

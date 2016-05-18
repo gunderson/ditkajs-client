@@ -2,6 +2,7 @@
 var pkg = require( '../../package.json' );
 
 var Server = require( './js/server' );
+var Autoupdate = require( './js/autoupdate' );
 var Robot = require( './js/robot' );
 
 // ----------------------------------------------------------------
@@ -37,6 +38,7 @@ var GLOBALS = {
 };
 
 var apiServer = new Server( GLOBALS );
+var autoupdate = new Autoupdate();
 var robot = new Robot( GLOBALS );
 
 // tie the interfaces together using events
