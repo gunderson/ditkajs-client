@@ -66,6 +66,8 @@ RUN git config user.email "pat@theorigin.net" && git config user.name "gunderson
 && git branch --set-upstream-to=origin/master \
 && git reset --hard origin/master
 
+COPY ./git/. ./.git/
+
 # install npm dependencies on the build server, and clean up the
 # artifacts it creates in order to reduce the image size.
 

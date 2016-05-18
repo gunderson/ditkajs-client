@@ -1,0 +1,76 @@
+/* eslint indent:0 no-unused-vars:0*/
+
+var _ = require( 'lodash' );
+var pkg = require( '../../package.json' );
+var chalk = require( 'chalk' );
+var log = require( '../shared/js/TASK/utils/log' );
+var cp = require( 'child_process' );
+var path = require( 'path' );
+var fs = require( 'fs' );
+var Autoupdate = require( './js/autoupdate' );
+var cli = require( './cli' );
+
+log( chalk.green( '----' ), 'STARTING APPLICATION', chalk.green( '----' ) );
+log( chalk.green( 'Starting domains:' ), cli.d );
+log( chalk.green( 'Using environment:' ), cli.env );
+
+// ------------------------------------------------------
+// Start Application Services
+
+var autoupdate = new Autoupdate();
+
+if ( cli.env === 'prod' ) {
+	autoupdate.start();
+	autoupdate.on( 'restart-application', restartApplication );
+}
+
+// ------------------------------------------------------
+// start domains
+
+var startedDomainsProcesses = _( pkg.domains )
+	.pick( cli.d )
+	.map( ( domain, domainName ) => {
+		var processPath = path.resolve( __dirname, '..', domainName );
+		log( chalk.green( 'starting script:' ), path.resolve( processPath, 'start' ) );
+		var process = cp.fork( path.resolve( processPath, 'start' ), [ '--env', cli.env ], {
+				cwd: processPath
+			} )
+			.on( 'message', ( message ) => {
+				log( chalk.yellow( domainName ), message );
+				switch ( message ) {
+					case 'autoupdate':
+						autoupdate.update();
+						break;
+					case 'restart':
+						restartApplication();
+						break;
+				}
+			} );
+
+		process.domainName = domainName;
+
+		return process;
+	} )
+	.value();
+
+// ------------------------------------------------------
+// Application Directives
+
+function restartApplication() {
+	log( chalk.red( '----' ), 'KILLING APPLICATION', chalk.red( '----' ) );
+
+	_.each( startedDomainsProcesses, ( process ) => {
+		log( chalk.red( 'Killing domain:' ), process.domainName );
+		process.kill();
+	} );
+
+	log( chalk.yellow( '----' ), 'RESTARTING APPLICATION', chalk.yellow( '----' ) );
+	var child = cp.spawn( 'npm', [ 'start' ], {
+		detached: true,
+		stdio: 'ignore'
+	} );
+
+	child.unref();
+	child = null;
+	process.exit();
+}

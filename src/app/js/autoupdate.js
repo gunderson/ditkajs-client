@@ -26,11 +26,11 @@ class Service extends TASK {
 
 		this.pkg = JSON.parse( this.pkg );
 		this.pollInterval = null;
-		log( chalk.green( 'autoupdate service' ), 'polling every:', chalk.green( `${this.pkg.domains.device.autoupdate.pollFrequency}ms` ) );
+		log( chalk.green( 'autoupdate service' ), 'polling every:', chalk.green( `${this.pkg.autoupdate.pollFrequency}ms` ) );
 	}
 
 	start() {
-		this.pollInterval = setInterval( this.update.bind( this ), this.pkg.domains.device.autoupdate.pollFrequency );
+		this.pollInterval = setInterval( this.update.bind( this ), this.pkg.autoupdate.pollFrequency );
 	}
 
 	stop() {
@@ -46,9 +46,9 @@ class Service extends TASK {
 		log( chalk.green( 'autoupdate server' ), 'checking version' );
 		var def = Q.defer();
 		var options = {
-			hostname: this.pkg.domains.device.autoupdate.remoteHost,
+			hostname: this.pkg.autoupdate.remoteHost,
 			port: 443,
-			path: this.pkg.domains.device.autoupdate.remotePath,
+			path: this.pkg.autoupdate.remotePath,
 			method: 'GET',
 			headers: {
 				'user-agent': 'nodejs autoupdate ping'
@@ -93,7 +93,7 @@ class Service extends TASK {
 	}
 
 	pullComplete() {
-		process.send( 'restart' );
+		this.trigger( 'restart-application' );
 	}
 }
 

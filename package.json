@@ -2,12 +2,12 @@
 	"name": "rpi-lighthub",
 	"version": "0.1.0",
 	"description": "Simple LED blink in node.js with resin.io on pi3",
-	"main": "main.js",
+	"main": "app/start.js",
 	"scripts": {
-		"start": "gulp --env prod && node --harmony ./dist/start --env prod -d 'front-end' -d 'device'",
-		"stage": "gulp --env stage && node --harmony ./dist/start --env stage -d 'front-end' -d 'device'",
-		"dev": "gulp --env dev && node --harmony ./dist/start --env dev -d 'front-end' -d 'device'",
-		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/start --env dev -d 'front-end'"
+		"start": "gulp --env prod && node --harmony ./dist/app/start --env prod -d 'front-end' -d 'device'",
+		"stage": "gulp --env stage && node --harmony ./dist/app/start --env stage -d 'front-end' -d 'device'",
+		"dev": "gulp --env dev && node --harmony ./dist/app/start --env dev -d 'front-end' -d 'device'",
+		"watch": "gulp --env dev && (gulp watch --env dev &) && node --harmony ./dist/app/start --env dev -d 'front-end'"
 	},
 	"browserify": {
 		"transform": [
@@ -41,23 +41,10 @@
 		"browserify": "^13.0.1",
 		"domain": "0.0.1",
 		"express": "^4.13.4",
+		"forever": "^0.15.1",
 		"git-web-hooks": "0.0.3",
 		"graceful-fs": "^4.1.3",
 		"gsap": "^1.18.4",
-		"gulp": "*",
-		"gulp-babel": "^6.1.2",
-		"gulp-browserify": "^0.5.1",
-		"gulp-csso": "*",
-		"gulp-jst-concat": "github:gunderson/gulp-jst-concat",
-		"gulp-livereload": "*",
-		"gulp-plumber": "^1.1.0",
-		"gulp-pug": "^3.0.2",
-		"gulp-rename": "github:gunderson/gulp-rename",
-		"gulp-rm": "^1.0.1",
-		"gulp-sass": "*",
-		"gulp-tap": "^0.1.3",
-		"gulp-uglify": "*",
-		"gulp-util": "^3.0.7",
 		"howler": "^1.1.29",
 		"johnny-five": "^0.9.44",
 		"jquery": "^2.2.3",
@@ -92,18 +79,35 @@
 		"device": {
 			"port": 3001,
 			"address": "10.0.1.14",
-			"lrPort": 35728,
-			"autoupdate": {
-				"pollFrequency": 60000,
-				"srcPath": "/usr/src/app/",
-				"remoteHost": "raw.githubusercontent.com",
-				"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
-			}
+			"lrPort": 35728
 		},
 		"webhooks": {
 			"port": 3333,
 			"address": "10.0.1.14"
 		}
 	},
-	"build-id": "d228db49a56aa17247d70ea8d611a473517d291baedd0e3ee8161156867b8d64"
+	"autoupdate": {
+		"pollFrequency": 60000,
+		"srcPath": "/usr/src/app/",
+		"remoteHost": "raw.githubusercontent.com",
+		"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
+	},
+	"build-id": "f11124ffba156194c8215a176d4b38a6fc2bb29f7a7e677ca3c6c8124fcc9771",
+	"devDependencies": {
+		"gulp": "*",
+		"gulp-babel": "^6.1.2",
+		"gulp-browserify": "^0.5.1",
+		"gulp-csso": "*",
+		"gulp-jst-concat": "github:gunderson/gulp-jst-concat",
+		"gulp-livereload": "*",
+		"gulp-plumber": "^1.1.0",
+		"gulp-pug": "^3.0.2",
+		"gulp-rename": "github:gunderson/gulp-rename",
+		"gulp-rm": "^1.0.1",
+		"gulp-sass": "*",
+		"gulp-tap": "^0.1.3",
+		"gulp-uglify": "*",
+		"gulp-util": "^3.0.7",
+		"gulp-docco": "0.0.4"
+	}
 }
