@@ -36,4 +36,4 @@ var GLOBALS = {
 	ENV: require( `../shared/js/data/env/${env}` )
 };
 
-var frontEndServer = new Server( GLOBALS );
+var frontEndServer = new Server( GLOBALS ); // eslint-disable-line no-unused-vars

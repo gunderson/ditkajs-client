@@ -48,8 +48,6 @@ class Service extends TASK {
 				'user-agent': 'nodejs autoupdate ping'
 			}
 		};
-		log( chalk.cyan( 'autoupdate error:\n' ), options );
-
 
 		var req = https.request( options, ( res ) => {
 			var data = [];
@@ -79,6 +77,11 @@ class Service extends TASK {
 			if ( error ) {
 				log( chalk.red( 'autoupdate error:\n' ), error );
 			}
+
+			if ( stdout === 'Already up-to-date.\n' ) {
+				log( chalk.red( 'autoupdate error:\n' ), stdout );
+			}
+
 			this.pullComplete();
 		} );
 	}

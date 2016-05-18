@@ -6,6 +6,7 @@ var chalk = require( 'chalk' );
 var log = require( './shared/js/TASK/utils/log' );
 var cp = require( 'child_process' );
 var path = require( 'path' );
+var fs = require( 'fs' );
 
 // ----------------------------------------------------------------
 // CLI
@@ -55,31 +56,41 @@ log( chalk.green( 'Using environment:' ), env );
 // ------------------------------------------------------
 // start domains
 
-var startedDomains = _( pkg.domains )
+var startedDomainsProcesses = _( pkg.domains )
 	.pick( runDomains )
 	.map( ( domain, domainName ) => {
 		var processPath = path.resolve( __dirname, domainName );
-		return cp.fork( path.resolve( processPath, 'start' ), [ '--env', env ], {
+		var process = cp.fork( path.resolve( processPath, 'start' ), [ '--env', env ], {
 				cwd: processPath
 			} )
 			.on( 'message', ( message ) => {
 				log( chalk.yellow( domainName ), message );
-				if ( 'message' === 'restart' ) {
+				if ( message === 'restart' ) {
 					restartApplication();
 				}
 			} );
+
+		process.domainName = domainName;
+
+		return process;
 	} )
 	.value();
 
-
-
 function restartApplication() {
-	log( chalk.green( 'autoupdate service:' ), 'restarting application' );
-	var child = cp.spawn( './restart.sh', [ process.pid ], {
+	log( chalk.red( '----' ), 'KILLING APPLICATION', chalk.red( '----' ) );
+
+	_.each( startedDomainsProcesses, ( process ) => {
+		log( chalk.red( 'Killing domain:' ), process.domainName );
+		process.kill();
+	} );
+
+	log( chalk.yellow( '----' ), 'RESTARTING APPLICATION', chalk.yellow( '----' ) );
+	var child = cp.spawn( 'npm', [ 'start' ], {
 		detached: true,
-		stdio: [ 'ignore' ]
+		stdio: 'ignore'
 	} );
 
 	child.unref();
 	child = null;
+	process.exit();
 }
