@@ -13,7 +13,7 @@ class Service extends TASK {
 		super();
 		log( chalk.green( 'autoupdate server' ), 'starting', __dirname );
 
-		this.localSha = fs.readFileSync( '../../../.git/ORIG_HEAD', 'utf-8', ( err ) => {
+		this.pkg = fs.readFileSync( '../../../package.json', 'utf-8', ( err ) => {
 			if ( err ) {
 				// we don't have a local repo
 				// make a git repo
@@ -22,6 +22,8 @@ class Service extends TASK {
 				this.localSha = '';
 			}
 		} );
+
+		this.pollGit();
 
 		log( chalk.green( 'autoupdate service' ), 'polling every:', chalk.green( `${GLOBALS.pkg.domains.autoupdate.pollFrequency} ms` ) );
 	}
@@ -57,31 +59,26 @@ class Service extends TASK {
 		return def;
 	}
 
-	onReply( data ) {
-		var remoteSha = data[ 0 ].sha;
-		if ( this.localSha !== remoteSha ) {
+	onReply( remotePkg ) {
+		if ( this.pkg[ 'build-id' ] !== remotePkg[ 'build-id' ] ) {
 			// get the latest
+			this.getLatest();
+		} else {
+			log( chalk.green( 'autoupdate service:' ), 'up-to-date' );
 		}
 	}
 
 	getLatest() {
-
+		cp.exec( 'git pull --force', ( error, stdout, stderr ) => {
+			if ( error ) {
+				log( chalk.red( 'autoupdate error:' ), error );
+			}
+			this.pullComplete();
+		} );
 	}
 
-	onDownloadComplete() {
-
-	}
-
-	prepFiles() {
-
-	}
-
-	onPrepFilesComplete() {
-
-	}
-
-	restartApplication() {
-
+	pullComplete() {
+		process.send( 'restart' );
 	}
 }
 

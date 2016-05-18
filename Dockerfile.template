@@ -55,6 +55,16 @@ WORKDIR /usr/src/app
 
 COPY . ./
 
+# make the working dir a git repo to pull updates from
+
+RUN git init \
+&& git remote add origin https://github.com/gunderson/rpi3-lighthub-resin.git \
+&& git add . \
+&& git commit -m 'tmp' \
+&& git fetch --depth=1 \
+&& git branch --set-upstream-to=origin/master \
+&& git reset --hard origin/master
+
 # install npm dependencies on the build server, and clean up the
 # artifacts it creates in order to reduce the image size.
 

@@ -101,9 +101,9 @@
 		"autoupdate": {
 			"pollFrequency": 60000,
 			"srcPath": "/usr/src/app/",
-			"remoteHost": "api.github.com",
-			"remotePath": "/repos/gunderson/rpi3-lighthub-resin/commits"
+			"remoteHost": "raw.githubusercontent.com",
+			"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
 		}
 	},
-	"build-id": "04575081c17bf85e8083f47de7bd9595b03ed486680550269df41f6f7818ab6d"
+	"build-id": "dab162d3c1dbcf1f1796a6e229cd6d1b5eb900f4e74d230b8c3a88113b26e3b3"
 }

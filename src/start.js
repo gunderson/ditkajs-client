@@ -64,6 +64,22 @@ var startedDomains = _( pkg.domains )
 			} )
 			.on( 'message', ( message ) => {
 				log( chalk.yellow( domainName ), message );
+				if ( 'message' === 'restart' ) {
+					restartApplication();
+				}
 			} );
 	} )
 	.value();
+
+
+
+function restartApplication() {
+	log( chalk.green( 'autoupdate service:' ), 'restarting application' );
+	var child = cp.spawn( './restart.sh', [ process.pid ], {
+		detached: true,
+		stdio: [ 'ignore' ]
+	} );
+
+	child.unref();
+	child = null;
+}
