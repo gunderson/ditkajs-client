@@ -29,7 +29,7 @@
 	},
 	"author": "Patrik Gunderson",
 	"license": "MIT",
-	"repository": "https://github.com/gunderson/rpi3-lighthub-resin.git",
+	"repository": "https://github.com/gunderson/ditkajs-client.git",
 	"dependencies": {
 		"art-kit": "github:gunderson/art-kit",
 		"babel": "^6.5.2",
@@ -90,9 +90,9 @@
 		"pollFrequency": 60000,
 		"srcPath": "/usr/src/app/",
 		"remoteHost": "raw.githubusercontent.com",
-		"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
+		"remotePath": "/gunderson/ditkajs-client/master/package.json"
 	},
-	"build-id": "fc45d07fad4e79d058b0dc339df07dea22c4f7bdf4a3c25673cd7ffcd84ad4b5",
+	"build-id": "636edee8062c683646952e7de9c6d36bdfb260b1622ad86316b2417afb2e3c0a",
 	"devDependencies": {
 		"gulp": "*",
 		"gulp-babel": "^6.1.2",
