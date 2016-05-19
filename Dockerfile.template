@@ -58,7 +58,7 @@ RUN git init \
 && git remote add origin https://github.com/gunderson/ditkajs-client.git \
 # && git add . \
 # && git commit -m 'tmp' \
-&& git branch master \
+&& git checkout master \
 && git fetch --depth=1 \
 && git branch --set-upstream-to=origin/master \
 && git reset --hard origin/master
