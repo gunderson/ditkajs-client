@@ -14,9 +14,9 @@ function getTimestamp() {
 			timeZoneName: 'short'
 		} )
 		.split( ' ' )[ 2 ];
-	var h = date.getHours();
-	var i = date.getMinutes();
-	var s = date.getSeconds();
+	var h = _.padStart( date.getHours(), 2, '0' );
+	var i = _.padStart( date.getMinutes(), 2, '0' );
+	var s = _.padStart( date.getSeconds(), 2, '0' );
 	var ml = _.padStart( date.getMilliseconds(), 4, '0' );
 
 	return `${tz} ${h}:${i}:${s}.${ml}`;
