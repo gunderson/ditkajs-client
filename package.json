@@ -92,7 +92,7 @@
 		"remoteHost": "raw.githubusercontent.com",
 		"remotePath": "/gunderson/ditkajs-client/master/package.json"
 	},
-	"build-id": "636edee8062c683646952e7de9c6d36bdfb260b1622ad86316b2417afb2e3c0a",
+	"build-id": "55b9fcafc662e797c34a4ee23b9e70d314860dd314964b10ab4fde1826205955",
 	"devDependencies": {
 		"gulp": "*",
 		"gulp-babel": "^6.1.2",
