@@ -2,7 +2,7 @@ var _ = require( 'lodash' );
 var TaskPage = require( '../../../shared/js/TASK/Page' );
 var MainMenuView = require( './ui/Main-menu-view' );
 var MasterPageView = require( './pages/Master-page-view' );
-var ControlPanelPageView = require( './pages/control-panel-page-view' );
+var ControlPanelPageView = require( './pages/Control-panel-page-view' );
 
 class AppPage extends TaskPage {
 	constructor( options ) {

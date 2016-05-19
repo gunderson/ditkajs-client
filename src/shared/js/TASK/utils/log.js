@@ -1,5 +1,5 @@
 var _ = require( 'lodash' );
-var chalk = require( "chalk" );
+var chalk = require( 'chalk' );
 
 function log() {
 	var ts = '[' + chalk.gray( getTimestamp() ) + ']';
