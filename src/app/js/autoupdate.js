@@ -25,16 +25,16 @@ class Service extends TASK {
 		} );
 
 		this.pkg = JSON.parse( this.pkg );
-		this.pollInterval = null;
+		this.pollIntervalMarker = null;
 		log( chalk.green( 'autoupdate service' ), 'polling every:', chalk.green( `${this.pkg.autoupdate.pollFrequency}ms` ) );
 	}
 
 	start() {
-		this.pollInterval = setInterval( this.update.bind( this ), this.pkg.autoupdate.pollFrequency );
+		this.pollIntervalMarker = setInterval( this.update.bind( this ), this.pkg.autoupdate.pollFrequency );
 	}
 
 	stop() {
-		clearInterval( this.pollInterval );
+		clearInterval( this.pollIntervalMarker );
 	}
 
 	update() {
@@ -71,7 +71,7 @@ class Service extends TASK {
 
 	onReply( remotePkg ) {
 		if ( this.pkg[ 'build-id' ] !== remotePkg[ 'build-id' ] ) {
-			// get the latest
+			log( chalk.green( 'autoupdate service:' ), 'build-out-of-date' );
 			this.getLatest();
 		} else {
 			log( chalk.green( 'autoupdate service:' ), 'up-to-date' );
@@ -82,13 +82,19 @@ class Service extends TASK {
 		cp.exec( 'git pull --force', ( error, stdout, stderr ) => {
 			if ( error ) {
 				log( chalk.red( 'autoupdate error:\n' ), error );
+				log( chalk.red( 'autoupdate error:\n' ), stderr );
 			}
 
 			if ( stdout === 'Already up-to-date.\n' ) {
 				log( chalk.red( 'autoupdate error:\n' ), stdout );
+				log( chalk.red( 'autoupdate running resetting to head:\n' ), stdout );
+				cp.exec( 'git reset --hard HEAD' );
 			}
 
-			this.pullComplete();
+			if ( !error ) {
+				this.pullComplete();
+			}
+
 		} );
 	}
 
