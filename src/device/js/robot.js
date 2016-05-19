@@ -3,7 +3,7 @@ var _ = require( 'lodash' );
 var TASK = require( '../../shared/js/TASK/TASK' );
 var Raspi = require( 'raspi-io' );
 var five = require( 'johnny-five' );
-var AnimationPlayer = require( 'art-kit/AnimationPlayer' );
+var AnimationPlayer = require( 'art-kit/src/AnimationPlayer' );
 
 class Robot extends TASK {
 	constructor( GLOBALS ) {
