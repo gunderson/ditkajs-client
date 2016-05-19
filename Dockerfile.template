@@ -56,9 +56,10 @@ WORKDIR /usr/src/app
 RUN git init \
 && git config user.email "pat@theorigin.net" && git config user.name "gunderson" \
 && git remote add origin https://github.com/gunderson/rpi3-lighthub-resin.git \
-&& git branch master \
-&& git reset --hard origin/master \
-&& git branch --set-upstream-to=origin/master
+&& git add . \
+&& git commit -m 'tmp' \
+&& git branch --set-upstream-to=origin/master \
+&& git reset --hard origin/master 
 
 # COPY ./git/. ./.git/
 
