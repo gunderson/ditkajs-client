@@ -92,7 +92,7 @@
 		"remoteHost": "raw.githubusercontent.com",
 		"remotePath": "/gunderson/rpi3-lighthub-resin/master/package.json"
 	},
-	"build-id": "9b3dacd423f4587486136496e1ca815bea3de8f9d81cc41b108a3ef02bdfc59b",
+	"build-id": "30dc74528da1efc9e76dc5ae3b43473d58d0fcd45258d2d35a1d249eaab14abf",
 	"devDependencies": {
 		"gulp": "*",
 		"gulp-babel": "^6.1.2",
